@@ -146,7 +146,7 @@
   <div class="container" id="app">
     <!-- LOGIN VIEW -->
     <div id="loginView">
-      <h1>🏢 Brand Store Name Poll</h1>
+      <h1>🏢 PASONS PORT</h1>
       <h2>Employee Portal</h2>
       <div class="inline-group">
         <button id="signupBtn" class="secondary" style="width:auto;" onclick="showSignup()">First time? Register</button>
@@ -212,10 +212,15 @@
     </div>
   </div>
 
-  <script>
-    // ============ REPLACE THESE TWO VALUES ============
-    const SUPABASE_URL = 'https://ooalljqzldtqelvvtnri.supabase.co';  // ← your project URL
-    const SUPABASE_KEY = 'sb_publishable_45am3OE7b3oSKJzEPGFbTg_U6HYwVGi'; // ← your anon key
+ <script>
+    // Supabase setup – create once, safely
+    if (!window.supabaseClient) {
+        window.supabaseClient = window.supabase.createClient(
+            'https://ooalljqzldtqelvvtnri.supabase.co',
+            'sb_publishable_45am3OE7b3oSKJzEPGFbTg_U6HYwVGi'
+        );
+    }
+    const supabase = window.supabaseClient;
 
     let currentEmployeeId = null;
     let currentEmployee = null;
