@@ -6,6 +6,8 @@
 <title>Pasons Port — Brand Name Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 :root {
   --ink: #0a0a0f;
@@ -246,7 +248,9 @@ body::before {
   font-size: 12.5px; font-weight: 500;
   color: #9090a8;
   transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
 }
+.phase-step i { width: 14px; height: 14px; }
 .phase-step.active {
   background: var(--surface);
   color: var(--ink);
@@ -268,6 +272,10 @@ body::before {
 }
 .page-head p { color: #6b6b80; font-size: 14.5px; }
 
+/* ── ICON WRAPPER ── */
+.icon-text { display: flex; align-items: center; gap: 6px; }
+.icon-text i { width: 18px; height: 18px; }
+
 /* ── SUGGESTION ITEM ── */
 .suggestion-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
 .sug-item {
@@ -283,7 +291,6 @@ body::before {
 @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 .sug-item .sug-name { font-weight: 500; color: var(--ink); flex: 1; }
 .sug-item .sug-by { font-size: 12.5px; color: #9090a8; }
-.sug-item .check-wrap { display: flex; align-items: center; }
 .sug-check {
   width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer;
 }
@@ -309,9 +316,9 @@ body::before {
 .vote-radio { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
 .vote-label { font-size: 15px; font-weight: 500; color: var(--ink); }
 .voted-label { font-size: 15px; font-weight: 500; color: var(--ink); flex: 1; }
-.vote-bar-wrap { flex: 1; height: 6px; background: var(--surface3); border-radius: 100px; overflow: hidden; }
+.vote-bar-wrap { flex: 1; height: 6px; background: var(--surface3); border-radius: 100px; overflow: hidden; margin: 0 12px; }
 .vote-bar { height: 100%; background: var(--accent); border-radius: 100px; transition: width 0.5s ease; }
-.vote-count-label { font-size: 13px; color: #6b6b80; min-width: 44px; text-align: right; font-weight: 500; }
+.vote-count-label { font-size: 13px; color: #6b6b80; min-width: 40px; text-align: right; font-weight: 500; }
 
 /* ── RESULT ITEM ── */
 .result-item {
@@ -334,14 +341,14 @@ body::before {
 .result-item.winner .result-rank { color: #f59e0b; }
 .result-name { flex: 1; font-weight: 500; font-size: 15.5px; }
 .result-votes { font-size: 13px; color: #6b6b80; white-space: nowrap; }
-.crown { font-size: 18px; }
 
 /* ── STATUS TAG ── */
 .status-tag {
-  display: inline-flex; align-items: center; gap: 5px;
+  display: inline-flex; align-items: center; gap: 4px;
   font-size: 12px; font-weight: 500; padding: 4px 11px;
   border-radius: 100px;
 }
+.status-tag i { width: 12px; height: 12px; }
 .tag-suggestion { background: var(--amber-light); color: #92400e; }
 .tag-poll { background: var(--accent-light); color: #3730a3; }
 .tag-finished { background: var(--green-light); color: #065f46; }
@@ -351,7 +358,7 @@ body::before {
   text-align: center; padding: 32px 16px;
   color: #9090a8; font-size: 14px;
 }
-.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
 
 /* ── SIDEBAR ── */
 .admin-layout {
@@ -368,10 +375,12 @@ body::before {
   margin-bottom: 20px; color: white;
 }
 .admin-sidebar a {
-  display: block; padding: 12px 24px; color: #cbd5e1;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 24px; color: #cbd5e1;
   text-decoration: none; font-size: 14px; transition: 0.2s;
   cursor: pointer;
 }
+.admin-sidebar a i { width: 16px; height: 16px; }
 .admin-sidebar a:hover, .admin-sidebar a.active {
   background: rgba(255,255,255,0.05); color: white;
 }
@@ -385,7 +394,7 @@ body::before {
   flex: 1; background: var(--surface2); border: 1px solid var(--border);
   border-radius: 12px; padding: 16px;
 }
-.stat-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 26px; color: var(--ink); }
+.stat-val { font-size: 26px; font-weight: 700; color: var(--ink); }
 .stat-lbl { font-size: 12px; color: #9090a8; margin-top: 2px; }
 
 /* ── TABLE ── */
@@ -404,7 +413,6 @@ body::before {
 .text-center { text-align: center; }
 .text-sm { font-size: 13.5px; color: #6b6b80; }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 800px) {
   .admin-layout { flex-direction: column; }
   .admin-sidebar { width: 100%; padding: 12px 16px; }
@@ -426,44 +434,34 @@ body::before {
   </header>
 
   <main class="main">
-    <!-- ════════════════════════════════
-         PAGE: LOGIN
-    ═════════════════════════════════ -->
+    <!-- LOGIN PAGE -->
     <div id="pageLogin" class="page">
       <div class="auth-hero">
         <div class="phase-badge"><span class="dot"></span> Employee Portal</div>
         <h1>Brand Name<br/>Nomination Portal</h1>
-        <p>Sign in with your employee ID to participate in the brand naming campaign.</p>
+        <p>Sign in with your employee ID to participate.</p>
       </div>
       <div class="card">
         <div class="field">
           <label>Employee ID</label>
-          <input type="text" id="loginId" placeholder="e.g. EMP001" autocomplete="off" onkeydown="if(event.key==='Enter')login()"/>
+          <input type="text" id="loginId" placeholder="e.g. EMP001" onkeydown="if(event.key==='Enter')login()"/>
         </div>
         <button class="btn btn-primary" onclick="login()" id="loginBtn">Sign In</button>
         <div id="loginMsg" class="toast"></div>
         <div class="divider">or</div>
-        <p class="text-center text-sm">New employee? <button class="link-btn" onclick="showPage('pageRegister')">Register here</button></p>
+        <p class="text-center text-sm">New? <button class="link-btn" onclick="showPage('pageRegister')">Register</button></p>
       </div>
     </div>
 
-    <!-- ════════════════════════════════
-         PAGE: REGISTER
-    ═════════════════════════════════ -->
+    <!-- REGISTER PAGE -->
     <div id="pageRegister" class="page hidden">
       <div class="auth-hero">
         <h1>Create Account</h1>
         <p>Register with your company-issued employee ID.</p>
       </div>
       <div class="card">
-        <div class="field">
-          <label>Employee ID</label>
-          <input type="text" id="regId" placeholder="e.g. EMP001"/>
-        </div>
-        <div class="field">
-          <label>Full Name</label>
-          <input type="text" id="regName" placeholder="Your full name"/>
-        </div>
+        <div class="field"><label>Employee ID</label><input type="text" id="regId" placeholder="e.g. EMP001"/></div>
+        <div class="field"><label>Full Name</label><input type="text" id="regName" placeholder="Your full name"/></div>
         <button class="btn btn-primary" onclick="register()" id="regBtn">Create Account</button>
         <div id="regMsg" class="toast"></div>
         <div class="divider">or</div>
@@ -471,71 +469,56 @@ body::before {
       </div>
     </div>
 
-    <!-- ════════════════════════════════
-         PAGE: EMPLOYEE (with live polling for phase changes)
-    ═════════════════════════════════ -->
+    <!-- EMPLOYEE PAGE -->
     <div id="pageEmployee" class="page hidden">
       <div id="phaseStrip" class="phase-strip">
-        <div class="phase-step" id="ps1">💡 Suggest</div>
-        <div class="phase-step" id="ps2">🗳 Vote</div>
-        <div class="phase-step" id="ps3">🏆 Results</div>
+        <div class="phase-step" id="ps1"><i data-lucide="lightbulb"></i>Suggest</div>
+        <div class="phase-step" id="ps2"><i data-lucide="check-square"></i>Vote</div>
+        <div class="phase-step" id="ps3"><i data-lucide="trophy"></i>Results</div>
       </div>
 
       <div id="empSuggestSection">
-        <div class="page-head">
-          <h2>Suggest a Brand Name</h2>
-          <p id="campDesc">Share your creative idea for our new brand name. All suggestions will be reviewed by the admin team.</p>
-        </div>
+        <div class="page-head"><h2>Suggest a Name</h2><p id="campDesc">Share your creative idea.</p></div>
         <div class="card card-sm">
-          <div class="field" style="margin-bottom:12px;">
-            <label>Your suggestion</label>
-            <input type="text" id="sugInput" placeholder="Enter a brand name..." maxlength="80" onkeydown="if(event.key==='Enter')submitSuggestion()"/>
+          <div class="field" style="margin-bottom:12px;"><label>Your suggestion</label>
+            <input type="text" id="sugInput" placeholder="Enter a brand name..." maxlength="80"/>
           </div>
-          <button class="btn btn-primary btn-sm" style="width:100%" onclick="submitSuggestion()" id="sugBtn">Submit Suggestion</button>
+          <button class="btn btn-primary btn-sm" onclick="submitSuggestion()" id="sugBtn">Submit</button>
           <div id="sugMsg" class="toast"></div>
         </div>
-        <div class="section-label">All Suggestions</div>
-        <div id="empSugList" class="suggestion-list">
-          <div class="empty"><div class="empty-icon">💭</div>No suggestions yet. Be the first!</div>
-        </div>
+        <div class="section-label text-sm">All Suggestions</div>
+        <div id="empSugList" class="suggestion-list"></div>
       </div>
 
       <div id="empPollSection" class="hidden">
-        <div class="page-head">
-          <h2>Cast Your Vote</h2>
-          <p>The admin has shortlisted the best suggestions. Vote for your favourite brand name.</p>
-        </div>
+        <div class="page-head"><h2>Cast Your Vote</h2><p>Choose your favourite name.</p></div>
         <div id="alreadyVotedBanner" class="voted-banner hidden">
-          ✅ You've already cast your vote. Results will be published soon.
+          <i data-lucide="check-circle" style="width:18px;height:18px;color:var(--green)"></i> You've voted. Live results below.
         </div>
         <div id="pollOptionsList" class="vote-list"></div>
         <div id="voteActions" class="mt16">
           <button class="btn btn-accent" onclick="submitVote()" id="voteBtn">Submit Vote</button>
           <div id="voteMsg" class="toast"></div>
         </div>
+        <div id="empLivePollResults" class="hidden mt20"></div>
       </div>
 
       <div id="empResultsSection" class="hidden">
-        <div class="page-head">
-          <h2>🏆 Final Results</h2>
-          <p>The votes have been counted. Here are the results of the brand naming campaign.</p>
-        </div>
+        <div class="page-head"><h2>Final Results</h2><p>The contest has ended.</p></div>
         <div id="empResultsList"></div>
       </div>
-      <div class="text-center mt16"><button class="btn btn-secondary btn-sm" onclick="renderEmployeeView()">🔄 Refresh</button></div>
+      <div class="text-center mt16"><button class="btn btn-secondary btn-sm" onclick="renderEmployeeView()"><i data-lucide="refresh-cw"></i> Refresh</button></div>
     </div>
 
-    <!-- ════════════════════════════════
-         PAGE: ADMIN (sidebar + tabs)
-    ═════════════════════════════════ -->
+    <!-- ADMIN PAGE (sidebar) -->
     <div id="pageAdmin" class="page-wide hidden">
       <div class="admin-layout">
         <div class="admin-sidebar">
-          <h2>Admin Panel</h2>
-          <a href="#" class="active" data-section="overview" onclick="switchAdminTab('overview')">📊 Overview</a>
-          <a href="#" data-section="activeContest" onclick="switchAdminTab('activeContest')">📋 Active Contest</a>
-          <a href="#" data-section="allContests" onclick="switchAdminTab('allContests')">🏆 All Contests</a>
-          <a href="#" data-section="employees" onclick="switchAdminTab('employees')">👥 Employees</a>
+          <h2><i data-lucide="sliders" style="width:20px;height:20px;vertical-align:middle;"></i> Admin</h2>
+          <a class="active" onclick="switchAdminTab('overview')"><i data-lucide="layout-dashboard"></i> Overview</a>
+          <a onclick="switchAdminTab('activeContest')"><i data-lucide="play-circle"></i> Active Contest</a>
+          <a onclick="switchAdminTab('allContests')"><i data-lucide="list"></i> All Contests</a>
+          <a onclick="switchAdminTab('employees')"><i data-lucide="users"></i> Employees</a>
         </div>
         <div id="adminContentArea" class="admin-content"></div>
       </div>
@@ -550,25 +533,20 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let db = null;
 let ME = null;
 let ACTIVE_CONTEST = null;
-let employeePollInterval = null;
-let adminPollInterval = null;
+let employeeInterval = null;
+let adminInterval = null;
 
-// ── INIT ────────────────────────────────────────────────
+// Init
 window.addEventListener('load', () => {
-  try {
-    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  } catch(e) {
-    alert('Database connection failed. Please refresh.');
-    return;
-  }
+  try { db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
+  catch(e) { alert('DB connection failed.'); return; }
   showPage('pageLogin');
 });
 
 function showPage(id) {
-  ['pageLogin','pageRegister','pageEmployee','pageAdmin'].forEach(p => {
-    document.getElementById(p).classList.add('hidden');
-  });
+  ['pageLogin','pageRegister','pageEmployee','pageAdmin'].forEach(p => document.getElementById(p).classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
+  if (id === 'pageAdmin') lucide.createIcons();
 }
 
 function showTopBar(show) {
@@ -578,9 +556,7 @@ function showTopBar(show) {
     const initials = (ME.full_name || ME.employee_id).split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     document.getElementById('topAvatar').textContent = initials;
     document.getElementById('topName').textContent = ME.full_name || ME.employee_id;
-  } else {
-    el.classList.add('hidden');
-  }
+  } else el.classList.add('hidden');
 }
 
 function toast(elId, msg, type='info') {
@@ -590,151 +566,97 @@ function toast(elId, msg, type='info') {
   if (type !== 'error') setTimeout(() => el.classList.remove('show'), 4000);
 }
 
-// ── LOGIN ───────────────────────────────────────────────
 async function login() {
-  const raw = document.getElementById('loginId').value.trim();
-  if (!raw) { toast('loginMsg','Please enter your Employee ID.','error'); return; }
-  const id = raw.toUpperCase();
+  const id = document.getElementById('loginId').value.trim().toUpperCase();
+  if (!id) { toast('loginMsg','Enter your Employee ID.','error'); return; }
   setLoading('loginBtn', true);
-
   const { data, error } = await db.from('employees').select('*').eq('employee_id', id).maybeSingle();
-  if (error || !data) {
-    toast('loginMsg','Employee ID not found. Please register first.','error');
-    setLoading('loginBtn', false);
-    return;
-  }
+  if (error || !data) { toast('loginMsg','ID not found.','error'); setLoading('loginBtn', false); return; }
+  if (data.status !== 'approved') { toast('loginMsg','Account pending approval.','error'); setLoading('loginBtn', false); return; }
   ME = data;
-  if (ME.status !== 'approved') {
-    toast('loginMsg','⏳ Your account is pending approval by admin.','error');
-    setLoading('loginBtn', false);
-    return;
-  }
-
-  toast('loginMsg','Welcome back, ' + (ME.full_name || ME.employee_id) + '!','success');
   setLoading('loginBtn', false);
   showTopBar(true);
-
   await loadActiveContest();
-  if (ME.role === 'admin') {
-    showPage('pageAdmin');
-    switchAdminTab('overview');
-  } else {
-    showPage('pageEmployee');
-    await renderEmployeeView();
-    // Start live watcher for phase changes
-    if (employeePollInterval) clearInterval(employeePollInterval);
-    employeePollInterval = setInterval(async () => {
-      const old = ACTIVE_CONTEST?.status;
-      await loadActiveContest();
-      if (ACTIVE_CONTEST && old !== ACTIVE_CONTEST.status) {
-        await renderEmployeeView();  // updates UI when phase flips
-      }
-    }, 10000);
-  }
+  if (ME.role === 'admin') { showPage('pageAdmin'); switchAdminTab('overview'); }
+  else { showPage('pageEmployee'); await renderEmployeeView(); startEmployeeAutoRefresh(); }
 }
 
 async function register() {
   const id = document.getElementById('regId').value.trim().toUpperCase();
   const name = document.getElementById('regName').value.trim();
-  if (!id || !name) { toast('regMsg','All fields are required.','error'); return; }
+  if (!id || !name) { toast('regMsg','All fields required.','error'); return; }
   setLoading('regBtn', true);
-
   const { error } = await db.from('employees').insert({ employee_id: id, full_name: name, role: 'employee', status: 'pending' });
-  if (error) {
-    toast('regMsg', error.message.includes('duplicate') ? 'This ID is already registered.' : error.message, 'error');
-  } else {
-    toast('regMsg', '✅ Account created! Awaiting admin approval.','success');
-  }
+  toast('regMsg', error ? (error.message.includes('duplicate')?'ID already exists.':error.message) : '✅ Registered! Awaiting approval.','success');
   setLoading('regBtn', false);
 }
 
 function logout() {
+  clearIntervals();
   ME = null; ACTIVE_CONTEST = null;
-  if (employeePollInterval) clearInterval(employeePollInterval);
-  if (adminPollInterval) clearInterval(adminPollInterval);
   showTopBar(false);
-  document.getElementById('loginId').value = '';
   showPage('pageLogin');
+}
+
+function startEmployeeAutoRefresh() {
+  clearIntervals();
+  employeeInterval = setInterval(async () => {
+    const old = ACTIVE_CONTEST?.status;
+    await loadActiveContest();
+    if (ACTIVE_CONTEST && old !== ACTIVE_CONTEST.status) {
+      await renderEmployeeView();
+    } else if (ACTIVE_CONTEST?.status === 'poll') {
+      // If employee already voted, update live results
+      await updateLiveEmpResults();
+    }
+  }, 8000);
+}
+
+function clearIntervals() {
+  if (employeeInterval) clearInterval(employeeInterval);
+  if (adminInterval) clearInterval(adminInterval);
 }
 
 async function loadActiveContest() {
   const { data } = await db.from('contests').select('*').neq('status','finished').order('id',{ascending:false}).limit(1).maybeSingle();
   ACTIVE_CONTEST = data;
-  return ACTIVE_CONTEST;
 }
 
-// ════════════════════════════════════════════════════════
-//  EMPLOYEE VIEW (unchanged logic, now with live refresh)
-// ════════════════════════════════════════════════════════
+// ── EMPLOYEE UI ─────────────────────────────
 async function renderEmployeeView() {
   if (!ACTIVE_CONTEST) {
-    document.getElementById('empSuggestSection').innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No active campaign at the moment.</div>';
-    return;
+    document.getElementById('empSuggestSection').innerHTML = '<div class="empty"><div class="empty-icon"><i data-lucide="inbox"></i></div>No active campaign.</div>';
+    lucide.createIcons(); return;
   }
-
   const status = ACTIVE_CONTEST.status;
-  const phases = ['suggestion','poll','finished'];
-  const ids = ['ps1','ps2','ps3'];
-  const idx = phases.indexOf(status);
-  ids.forEach((id, i) => {
+  ['ps1','ps2','ps3'].forEach((id,i) => {
     const el = document.getElementById(id);
-    if (!el) return;
-    el.className = 'phase-step';
-    if (i < idx) el.classList.add('done');
-    else if (i === idx) el.classList.add('active');
+    el.className = 'phase-step' + (i < ['suggestion','poll','finished'].indexOf(status) ? ' done':'') + (i === ['suggestion','poll','finished'].indexOf(status) ? ' active':'');
   });
 
   hide('empSuggestSection'); hide('empPollSection'); hide('empResultsSection');
-
-  if (status === 'suggestion') {
-    show('empSuggestSection');
-    document.getElementById('campDesc').textContent = ACTIVE_CONTEST.description || 'Share your creative idea.';
-    await loadEmpSuggestions();
-  } else if (status === 'poll') {
-    show('empPollSection');
-    await loadEmpPoll();
-  } else if (status === 'finished') {
-    show('empResultsSection');
-    await loadEmpResults();
-  }
+  if (status === 'suggestion') { show('empSuggestSection'); await loadEmpSuggestions(); }
+  else if (status === 'poll') { show('empPollSection'); await loadEmpPoll(); }
+  else { show('empResultsSection'); await loadEmpResults(); }
+  lucide.createIcons();
 }
 
 async function loadEmpSuggestions() {
-  const { data } = await db.from('suggestions')
-    .select('id, name_text, employee_id, employees(full_name)')
-    .eq('contest_id', ACTIVE_CONTEST.id)
-    .order('id', {ascending: false});
-
+  const { data } = await db.from('suggestions').select('id, name_text, employee_id, employees(full_name)').eq('contest_id', ACTIVE_CONTEST.id).order('id',{ascending:false});
   const container = document.getElementById('empSugList');
-  if (!data || data.length === 0) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">💭</div>No suggestions yet. Be the first!</div>';
-    return;
-  }
-  container.innerHTML = data.map(s => {
-    const isMe = s.employee_id === ME.employee_id;
-    return `<div class="sug-item">
-      <span class="sug-name">${esc(s.name_text)}</span>
-      <span class="sug-by">${esc(s.employees?.full_name || s.employee_id)}</span>
-      ${isMe ? '<span class="sug-own-badge">You</span>' : ''}
-    </div>`;
-  }).join('');
+  container.innerHTML = (!data||!data.length) ? '<div class="empty"><div class="empty-icon"><i data-lucide="message-circle"></i></div>No suggestions yet.</div>' :
+    data.map(s => `<div class="sug-item"><span class="sug-name">${esc(s.name_text)}</span><span class="sug-by">${esc(s.employees?.full_name||s.employee_id)}</span>${s.employee_id===ME.employee_id?'<span class="sug-own-badge">You</span>':''}</div>`).join('');
+  lucide.createIcons();
 }
 
 async function submitSuggestion() {
   const text = document.getElementById('sugInput').value.trim();
-  if (!text) { toast('sugMsg','Please enter a brand name.','error'); return; }
+  if (!text) { toast('sugMsg','Enter a name.','error'); return; }
   setLoading('sugBtn', true);
-
-  const { error } = await db.from('suggestions').insert({
-    contest_id: ACTIVE_CONTEST.id,
-    employee_id: ME.employee_id,
-    name_text: text
-  });
-
-  if (error) {
-    toast('sugMsg', error.message, 'error');
-  } else {
-    toast('sugMsg', '✅ Suggestion submitted!', 'success');
+  const { error } = await db.from('suggestions').insert({ contest_id: ACTIVE_CONTEST.id, employee_id: ME.employee_id, name_text: text });
+  if (error) toast('sugMsg', error.message, 'error');
+  else {
+    toast('sugMsg', 'Suggestion submitted!', 'success');
     document.getElementById('sugInput').value = '';
     await loadEmpSuggestions();
   }
@@ -742,39 +664,39 @@ async function submitSuggestion() {
 }
 
 async function loadEmpPoll() {
-  const { data: myVote } = await db.from('votes')
-    .select('id, shortlist_id')
-    .eq('contest_id', ACTIVE_CONTEST.id)
-    .eq('employee_id', ME.employee_id)
-    .maybeSingle();
-
-  const { data: opts } = await db.from('shortlist')
-    .select('id, suggestions(name_text)')
-    .eq('contest_id', ACTIVE_CONTEST.id);
-
+  const { data: myVote } = await db.from('votes').select('id,shortlist_id').eq('contest_id',ACTIVE_CONTEST.id).eq('employee_id',ME.employee_id).maybeSingle();
+  const { data: opts } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id',ACTIVE_CONTEST.id);
   const container = document.getElementById('pollOptionsList');
   const actions = document.getElementById('voteActions');
   const banner = document.getElementById('alreadyVotedBanner');
+  const liveDiv = document.getElementById('empLivePollResults');
 
   if (myVote) {
     banner.classList.remove('hidden');
     actions.classList.add('hidden');
+    container.innerHTML = '';
+    liveDiv.classList.remove('hidden');
+    await updateLiveEmpResults();
   } else {
     banner.classList.add('hidden');
     actions.classList.remove('hidden');
+    liveDiv.classList.add('hidden');
+    container.innerHTML = (!opts||!opts.length) ? '<div class="empty"><div class="empty-icon"><i data-lucide="list"></i></div>No options yet.</div>' :
+      opts.map(o => `<label class="vote-option" onclick="selectVote(this)"><input type="radio" class="vote-radio" name="voteOpt" value="${o.id}"><span class="vote-label">${esc(o.suggestions?.name_text||'?')}</span></label>`).join('');
   }
+  lucide.createIcons();
+}
 
-  if (!opts || opts.length === 0) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>No options available yet.</div>';
-    return;
-  }
-
-  container.innerHTML = opts.map(o => {
-    const selected = myVote && myVote.shortlist_id === o.id ? 'selected' : '';
-    return `<label class="vote-option ${selected}" onclick="selectVote(this)">
-      <input type="radio" class="vote-radio" name="voteOpt" value="${o.id}" ${myVote?'disabled':''} ${selected?'checked':''}>
-      <span class="vote-label">${esc(o.suggestions?.name_text || 'Unknown')}</span>
-    </label>`;
+async function updateLiveEmpResults() {
+  const { data: shortlist } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id', ACTIVE_CONTEST.id);
+  const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id', ACTIVE_CONTEST.id);
+  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const total = (votes||[]).length;
+  const items = (shortlist||[]).map(s => ({ name: s.suggestions?.name_text||'?', count: counts[s.id]||0 })).sort((a,b)=>b.count-a.count);
+  const liveDiv = document.getElementById('empLivePollResults');
+  liveDiv.innerHTML = '<div class="section-label text-sm">Live Vote Counts</div>' + items.map(o => {
+    const pct = total ? Math.round(o.count/total*100) : 0;
+    return `<div class="vote-option" style="cursor:default;margin-bottom:8px;"><span class="voted-label">${esc(o.name)}</span><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%"></div></div><span class="vote-count-label">${o.count} (${pct}%)</span></div>`;
   }).join('');
 }
 
@@ -785,56 +707,40 @@ function selectVote(el) {
 
 async function submitVote() {
   const sel = document.querySelector('input[name="voteOpt"]:checked');
-  if (!sel) { toast('voteMsg','Please select a name first.','error'); return; }
+  if (!sel) { toast('voteMsg','Select an option.','error'); return; }
   setLoading('voteBtn', true);
-
-  const { error } = await db.from('votes').insert({
-    contest_id: ACTIVE_CONTEST.id,
-    employee_id: ME.employee_id,
-    shortlist_id: parseInt(sel.value)
-  });
-
-  if (error) {
-    toast('voteMsg', error.message.includes('duplicate') ? 'You have already voted.' : error.message, 'error');
-  } else {
-    toast('voteMsg', '✅ Vote recorded! Thank you.', 'success');
+  const { error } = await db.from('votes').insert({ contest_id: ACTIVE_CONTEST.id, employee_id: ME.employee_id, shortlist_id: parseInt(sel.value) });
+  if (error) toast('voteMsg', error.message.includes('duplicate')?'Already voted.':error.message, 'error');
+  else {
     document.getElementById('voteBtn').disabled = true;
     document.getElementById('alreadyVotedBanner').classList.remove('hidden');
     document.getElementById('voteActions').classList.add('hidden');
+    document.getElementById('pollOptionsList').innerHTML = '';
+    document.getElementById('empLivePollResults').classList.remove('hidden');
+    await updateLiveEmpResults();
   }
   setLoading('voteBtn', false);
 }
 
 async function loadEmpResults() {
-  const { data: shortlist } = await db.from('shortlist')
-    .select('id, suggestions(name_text)').eq('contest_id', ACTIVE_CONTEST.id);
-  const { data: votes } = await db.from('votes')
-    .select('shortlist_id').eq('contest_id', ACTIVE_CONTEST.id);
-
-  const counts = {};
-  (votes||[]).forEach(v => counts[v.shortlist_id] = (counts[v.shortlist_id]||0)+1);
-  const results = (shortlist||[]).map(s => ({
-    name: s.suggestions?.name_text||'Unknown', count: counts[s.id]||0
-  })).sort((a,b)=>b.count-a.count);
-
-  const total = results.reduce((s,r)=>s+r.count,0);
+  const { data: shortlist } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id',ACTIVE_CONTEST.id);
+  const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id',ACTIVE_CONTEST.id);
+  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const results = (shortlist||[]).map(s => ({ name: s.suggestions?.name_text||'?', count: counts[s.id]||0 })).sort((a,b)=>b.count-a.count);
   document.getElementById('empResultsList').innerHTML = results.map((r,i) => `
     <div class="result-item ${i===0?'winner':''}">
-      <span class="result-rank">${i===0?'🏆':`#${i+1}`}</span>
+      <span class="result-rank">${i===0?'<i data-lucide="trophy"></i>':`#${i+1}`}</span>
       <span class="result-name">${esc(r.name)}</span>
-      <span class="result-votes">${r.count} vote${r.count!==1?'s':''} ${total?'('+Math.round(r.count/total*100)+'%)':''}</span>
+      <span class="result-votes">${r.count} vote${r.count!==1?'s':''}</span>
     </div>`).join('');
+  lucide.createIcons();
 }
 
-// ════════════════════════════════════════════════════════
-//  ADMIN SIDEBAR + TABS
-// ════════════════════════════════════════════════════════
+// ── ADMIN SIDEBAR ──────────────────────────
 function switchAdminTab(tab) {
   document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
-  document.querySelector(`.admin-sidebar a[data-section="${tab}"]`).classList.add('active');
-
-  if (adminPollInterval) clearInterval(adminPollInterval);
-
+  document.querySelector(`.admin-sidebar a:has(i[data-lucide="${tab==='overview'?'layout-dashboard':tab==='activeContest'?'play-circle':tab==='allContests'?'list':'users'}"])`)?.classList.add('active');
+  clearIntervals();
   switch(tab) {
     case 'overview': renderAdminOverview(); break;
     case 'activeContest': renderActiveContestTab(); break;
@@ -844,226 +750,198 @@ function switchAdminTab(tab) {
 }
 
 async function renderAdminOverview() {
-  const { count: empCount } = await db.from('employees').select('*', { count: 'exact', head: true });
+  const { count: empCount } = await db.from('employees').select('*',{count:'exact',head:true});
   const { data: contests } = await db.from('contests').select('*');
-  const active = contests?.filter(c => c.status !== 'finished').length || 0;
-  const finished = contests?.filter(c => c.status === 'finished').length || 0;
-
+  const active = contests?.filter(c=>c.status!=='finished').length||0;
+  const finished = contests?.filter(c=>c.status==='finished').length||0;
   document.getElementById('adminContentArea').innerHTML = `
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-val">${empCount || 0}</div><div class="stat-lbl">Employees</div></div>
-      <div class="stat-card"><div class="stat-val">${active}</div><div class="stat-lbl">Active Contests</div></div>
-      <div class="stat-card"><div class="stat-val">${finished}</div><div class="stat-lbl">Finished Contests</div></div>
+      <div class="stat-card"><div class="stat-val">${empCount||0}</div><div class="stat-lbl">Employees</div></div>
+      <div class="stat-card"><div class="stat-val">${active}</div><div class="stat-lbl">Active</div></div>
+      <div class="stat-card"><div class="stat-val">${finished}</div><div class="stat-lbl">Finished</div></div>
     </div>
-    <div class="card">
-      <h2 style="font-family:'Syne',sans-serif;">Quick Actions</h2>
+    <div class="card"><h2>Quick Actions</h2>
       <button class="btn btn-accent btn-sm mt16" onclick="switchAdminTab('activeContest')">Manage Active Contest</button>
       <button class="btn btn-secondary btn-sm mt8" onclick="switchAdminTab('employees')">Review Employees</button>
     </div>`;
+  lucide.createIcons();
 }
 
 async function renderActiveContestTab() {
   await loadActiveContest();
   if (!ACTIVE_CONTEST) {
     document.getElementById('adminContentArea').innerHTML = `
-      <div class="page-head"><h2>Create New Contest</h2></div>
+      <div class="page-head"><h2>Create Contest</h2></div>
       <div class="card">
-        <div class="field"><label>Contest Title</label><input type="text" id="newTitle" placeholder="e.g. New Brand Name"></div>
-        <div class="field"><label>Description</label><input type="text" id="newDesc" placeholder="Short description"></div>
-        <div class="field"><label>Type Label</label><input type="text" id="newType" placeholder="e.g. Product, Campaign"></div>
-        <div class="field"><label>Suggestion Deadline</label><input type="datetime-local" id="newDeadline"></div>
-        <button class="btn btn-accent" onclick="createContest()">Create Contest</button>
-        <div id="createMsg" class="toast"></div>
+        <div class="field"><label>Title</label><input type="text" id="newTitle"></div>
+        <div class="field"><label>Description</label><input type="text" id="newDesc"></div>
+        <div class="field"><label>Type</label><input type="text" id="newType" placeholder="e.g. Product"></div>
+        <div class="field"><label>Deadline</label><input type="datetime-local" id="newDeadline"></div>
+        <button class="btn btn-accent" onclick="createContest()">Create</button><div id="createMsg" class="toast"></div>
       </div>`;
-    return;
+    lucide.createIcons(); return;
   }
 
-  let html = `<div class="page-head"><h2>Active Contest: ${esc(ACTIVE_CONTEST.title)}</h2><span class="status-tag tag-${ACTIVE_CONTEST.status}">${ACTIVE_CONTEST.status}</span></div>`;
+  let html = `<div class="page-head"><h2>${esc(ACTIVE_CONTEST.title)}</h2><span class="status-tag tag-${ACTIVE_CONTEST.status}"><i data-lucide="${ACTIVE_CONTEST.status==='suggestion'?'lightbulb':ACTIVE_CONTEST.status==='poll'?'check-square':'trophy'}"></i>${ACTIVE_CONTEST.status}</span>
+    <button class="btn btn-danger btn-sm mt8" style="float:right;" onclick="deleteActiveContest()"><i data-lucide="trash-2"></i> Delete</button></div>`;
+
+  // Edit form (always visible)
+  html += `<div class="card card-sm mt8"><div class="section-label">Edit Contest</div>
+    <div class="field"><label>Title</label><input type="text" id="editTitle" value="${esc(ACTIVE_CONTEST.title)}"></div>
+    <div class="field"><label>Desc</label><input type="text" id="editDesc" value="${esc(ACTIVE_CONTEST.description||'')}"></div>
+    <div class="field"><label>Type</label><input type="text" id="editType" value="${esc(ACTIVE_CONTEST.type_label||'')}"></div>
+    <div class="field"><label>Deadline</label><input type="datetime-local" id="editDeadline" value="${ACTIVE_CONTEST.suggestion_end?.slice(0,16)||''}"></div>
+    <button class="btn btn-accent btn-sm" onclick="saveContestEdits()">Save</button><div id="editMsg" class="toast"></div></div>`;
+
   if (ACTIVE_CONTEST.status === 'suggestion') {
-    html += renderAdminSuggestionSection();
+    html += `<div class="card card-sm"><div class="section-label">Submit Your Own</div>
+      <div style="display:flex;gap:8px;"><input type="text" id="adminSugInput" placeholder="Idea..."><button class="btn btn-accent btn-sm" onclick="submitAdminSuggestion()">Add</button></div>
+      <div id="adminOwnSugMsg" class="toast"></div></div>
+      <div class="card card-sm"><div class="section-label">All Suggestions — select to shortlist</div>
+        <div id="adminSugList" class="suggestion-list"></div>
+        <button class="btn btn-danger mt16" onclick="launchPoll()">Launch Poll</button><div id="adminSugMsg" class="toast"></div></div>`;
   } else if (ACTIVE_CONTEST.status === 'poll') {
-    html += renderAdminPollSection();
-  } else if (ACTIVE_CONTEST.status === 'finished') {
-    html += renderAdminResultSection();
+    html += `<div class="card card-sm"><div class="section-label">Live Votes</div><div id="adminPollList"></div>
+      <button class="btn btn-danger mt16" onclick="endPoll()">End Poll</button><div id="adminPollMsg" class="toast"></div></div>`;
+  } else {
+    html += `<div id="adminResultsList"></div>`;
   }
 
   document.getElementById('adminContentArea').innerHTML = html;
+  lucide.createIcons();
 
   if (ACTIVE_CONTEST.status === 'suggestion') {
-    // Allow editing
-    document.getElementById('adminContentArea').insertAdjacentHTML('beforeend', `
-      <div class="card card-sm mt16" id="editContestCard">
-        <div class="section-label">Edit Contest Details</div>
-        <div class="field"><label>Title</label><input type="text" id="editTitle" value="${esc(ACTIVE_CONTEST.title)}"></div>
-        <div class="field"><label>Description</label><input type="text" id="editDesc" value="${esc(ACTIVE_CONTEST.description || '')}"></div>
-        <div class="field"><label>Type Label</label><input type="text" id="editType" value="${esc(ACTIVE_CONTEST.type_label || '')}"></div>
-        <div class="field"><label>Suggestion Deadline</label><input type="datetime-local" id="editDeadline" value="${ACTIVE_CONTEST.suggestion_end ? ACTIVE_CONTEST.suggestion_end.slice(0,16) : ''}"></div>
-        <button class="btn btn-accent btn-sm" onclick="saveContestEdits()">Save Changes</button>
-        <div id="editMsg" class="toast"></div>
-      </div>`);
-
-    await loadAdminSuggestionsForCurrent();
+    await loadAdminSuggestions();
   } else if (ACTIVE_CONTEST.status === 'poll') {
     await loadAdminPollData();
-    adminPollInterval = setInterval(loadAdminPollData, 8000);
-  } else if (ACTIVE_CONTEST.status === 'finished') {
+    adminInterval = setInterval(loadAdminPollData, 8000);
+  } else {
     await loadAdminResults();
   }
 }
 
-function renderAdminSuggestionSection() {
-  return `
-    <div class="card card-sm" style="margin-bottom:16px;">
-      <div class="section-label">Submit Your Own Suggestion</div>
-      <div style="display:flex;gap:10px;">
-        <input type="text" id="adminSugInput" placeholder="Add a brand name..." style="flex:1;" onkeydown="if(event.key==='Enter')submitAdminSuggestion()"/>
-        <button class="btn btn-accent btn-sm" onclick="submitAdminSuggestion()">+ Add</button>
-      </div>
-      <div id="adminOwnSugMsg" class="toast"></div>
-    </div>
-    <div class="card card-sm">
-      <div class="section-label">All Suggestions — check to shortlist</div>
-      <div id="adminSugList" class="suggestion-list"></div>
-      <button class="btn btn-danger mt16" onclick="launchPoll()">🚀 Launch Poll with Selected</button>
-      <div id="adminSugMsg" class="toast"></div>
-    </div>`;
+async function deleteActiveContest() {
+  if (!confirm('Delete this contest and all its data?')) return;
+  await db.from('votes').delete().eq('contest_id', ACTIVE_CONTEST.id);
+  await db.from('shortlist').delete().eq('contest_id', ACTIVE_CONTEST.id);
+  await db.from('suggestions').delete().eq('contest_id', ACTIVE_CONTEST.id);
+  await db.from('contests').delete().eq('id', ACTIVE_CONTEST.id);
+  ACTIVE_CONTEST = null;
+  switchAdminTab('activeContest');
 }
-
-async function submitAdminSuggestion() { /* same as before */ }
-async function loadAdminSuggestionsForCurrent() { /* same */ }
-
-async function launchPoll() {
-  const checks = document.querySelectorAll('.shortlist-cb:checked');
-  const ids = Array.from(checks).map(c=>parseInt(c.value));
-  if (ids.length < 2) { toast('adminSugMsg','Select at least 2 suggestions.','error'); return; }
-  for (const sid of ids) {
-    await db.from('shortlist').insert({ contest_id: ACTIVE_CONTEST.id, suggestion_id: sid });
-  }
-  await db.from('contests').update({ status: 'poll', poll_start: new Date().toISOString() }).eq('id', ACTIVE_CONTEST.id);
-  ACTIVE_CONTEST.status = 'poll';
-  toast('adminSugMsg','Poll is now live!','success');
-  setTimeout(() => switchAdminTab('activeContest'), 1500);
-}
-
-function renderAdminPollSection() { /* same */ }
-async function loadAdminPollData() { /* same */ }
-async function endPoll() { /* same but clears interval */ }
 
 async function saveContestEdits() {
   const title = document.getElementById('editTitle').value.trim();
   const desc = document.getElementById('editDesc').value.trim();
   const type = document.getElementById('editType').value.trim();
   const deadline = document.getElementById('editDeadline').value;
-  if (!title || !deadline) { toast('editMsg','Title and deadline required.','error'); return; }
-
-  await db.from('contests').update({
-    title, description: desc, type_label: type,
-    suggestion_end: new Date(deadline).toISOString()
-  }).eq('id', ACTIVE_CONTEST.id);
-
-  ACTIVE_CONTEST.title = title; /* update local */
-  toast('editMsg','✅ Contest updated.','success');
-  setTimeout(() => renderActiveContestTab(), 1000);
+  if (!title || !deadline) { toast('editMsg','Title & deadline required.','error'); return; }
+  await db.from('contests').update({ title, description: desc, type_label: type, suggestion_end: new Date(deadline).toISOString() }).eq('id', ACTIVE_CONTEST.id);
+  ACTIVE_CONTEST = { ...ACTIVE_CONTEST, title, description: desc, type_label: type, suggestion_end: deadline };
+  toast('editMsg','Saved!','success');
 }
-
+async function submitAdminSuggestion() {
+  const text = document.getElementById('adminSugInput').value.trim();
+  if (!text) { toast('adminOwnSugMsg','Enter a name.','error'); return; }
+  await db.from('suggestions').insert({ contest_id: ACTIVE_CONTEST.id, employee_id: ME.employee_id, name_text: text });
+  toast('adminOwnSugMsg','Added!','success');
+  document.getElementById('adminSugInput').value = '';
+  await loadAdminSuggestions();
+}
+async function loadAdminSuggestions() {
+  const { data } = await db.from('suggestions').select('id, name_text, employee_id, employees(full_name)').eq('contest_id', ACTIVE_CONTEST.id);
+  document.getElementById('adminSugList').innerHTML = (!data||!data.length) ? '<div class="empty">No suggestions.</div>' : data.map(s=>`<div class="sug-item"><span class="sug-name">${esc(s.name_text)}</span><span class="sug-by">${esc(s.employees?.full_name||s.employee_id)}</span><input type="checkbox" class="sug-check shortlist-cb" value="${s.id}"></div>`).join('');
+}
+async function launchPoll() {
+  const ids = [...document.querySelectorAll('.shortlist-cb:checked')].map(c=>parseInt(c.value));
+  if (ids.length<2) { toast('adminSugMsg','Select at least 2.','error'); return; }
+  for (let sid of ids) await db.from('shortlist').insert({ contest_id: ACTIVE_CONTEST.id, suggestion_id: sid });
+  await db.from('contests').update({ status: 'poll', poll_start: new Date().toISOString() }).eq('id',ACTIVE_CONTEST.id);
+  ACTIVE_CONTEST.status = 'poll';
+  switchAdminTab('activeContest');
+}
+async function loadAdminPollData() {
+  const { data: shortlist } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id',ACTIVE_CONTEST.id);
+  const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id',ACTIVE_CONTEST.id);
+  const counts = {}; (votes||[]).forEach(v=>counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const total = (votes||[]).length;
+  document.getElementById('adminPollList').innerHTML = (shortlist||[]).map(s => {
+    const pct = total ? Math.round((counts[s.id]||0)/total*100):0;
+    return `<div class="vote-option" style="cursor:default;margin-bottom:10px;"><span class="voted-label">${esc(s.suggestions?.name_text)}</span><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%"></div></div><span class="vote-count-label">${counts[s.id]||0} (${pct}%)</span></div>`;
+  }).join('');
+}
+async function endPoll() {
+  if (!confirm('End poll?')) return;
+  await db.from('contests').update({ status: 'finished', poll_end: new Date().toISOString() }).eq('id',ACTIVE_CONTEST.id);
+  ACTIVE_CONTEST.status = 'finished';
+  switchAdminTab('activeContest');
+}
+async function loadAdminResults() {
+  const { data: shortlist } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id',ACTIVE_CONTEST.id);
+  const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id',ACTIVE_CONTEST.id);
+  const counts = {}; (votes||[]).forEach(v=>counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const results = (shortlist||[]).map(s=>({ name: s.suggestions?.name_text||'?', count: counts[s.id]||0 })).sort((a,b)=>b.count-a.count);
+  document.getElementById('adminResultsList').innerHTML = results.map((r,i)=>`<div class="result-item ${i===0?'winner':''}"><span class="result-rank">${i===0?'<i data-lucide="trophy"></i>':`#${i+1}`}</span><span class="result-name">${esc(r.name)}</span><span class="result-votes">${r.count} votes</span></div>`).join('');
+  lucide.createIcons();
+}
+async function createContest() {
+  const title = document.getElementById('newTitle').value.trim();
+  const desc = document.getElementById('newDesc').value.trim();
+  const type = document.getElementById('newType').value.trim();
+  const deadline = document.getElementById('newDeadline').value;
+  if (!title||!deadline) { toast('createMsg','Title & deadline required.','error'); return; }
+  const { data, error } = await db.from('contests').insert({ title, description: desc, type_label: type, suggestion_end: new Date(deadline).toISOString(), status:'suggestion', created_by:ME.employee_id }).select().single();
+  if (error) toast('createMsg',error.message,'error');
+  else { ACTIVE_CONTEST = data; toast('createMsg','Contest created!','success'); setTimeout(()=>switchAdminTab('activeContest'),1000); }
+}
 async function renderAllContestsTab() {
-  const { data: contests } = await db.from('contests').select('*').order('id', {ascending: false});
+  const { data: contests } = await db.from('contests').select('*').order('id',{ascending:false});
   let html = '<div class="page-head"><h2>All Contests</h2></div>';
-  if (!contests || contests.length === 0) html += '<p>No contests found.</p>';
+  if (!contests||!contests.length) html += '<p>No contests.</p>';
   else {
-    html += '<table class="admin-table"><tr><th>Title</th><th>Type</th><th>Status</th><th>Winner</th><th>Votes</th><th>Date</th><th>Action</th></tr>';
-    for (const c of contests) {
-      let winner = '—', votes = 0;
-      if (c.status === 'finished') {
-        // Get winner by counting votes
-        const { data: agg } = await db.from('votes').select('shortlist_id').eq('contest_id', c.id);
-        if (agg && agg.length) {
-          const counts = {};
-          agg.forEach(v => counts[v.shortlist_id] = (counts[v.shortlist_id]||0)+1);
-          const top = Object.entries(counts).sort((a,b) => b[1]-a[1])[0];
-          if (top) {
-            const { data: opt } = await db.from('shortlist').select('suggestions(name_text)').eq('id', top[0]).single();
-            winner = opt?.suggestions?.name_text || 'Unknown';
-            votes = top[1];
-          }
+    html += '<table class="admin-table"><tr><th>Title</th><th>Type</th><th>Status</th><th>Winner</th><th>Votes</th><th>Action</th></tr>';
+    for (let c of contests) {
+      let winner='-', votes='-';
+      if (c.status==='finished') {
+        const { data: agg } = await db.from('votes').select('shortlist_id').eq('contest_id',c.id);
+        const cnts = {}; agg.forEach(v=>cnts[v.shortlist_id]=(cnts[v.shortlist_id]||0)+1);
+        const top = Object.entries(cnts).sort((a,b)=>b[1]-a[1])[0];
+        if (top) {
+          const { data: opt } = await db.from('shortlist').select('suggestions(name_text)').eq('id',top[0]).single();
+          winner = opt?.suggestions?.name_text||'?'; votes = top[1];
         }
       }
-      const date = c.created_at ? new Date(c.created_at).toLocaleDateString() : new Date(c.suggestion_end).toLocaleDateString();
-      html += `<tr>
-        <td>${esc(c.title)}</td>
-        <td>${c.type_label || '—'}</td>
-        <td><span class="status-tag tag-${c.status}">${c.status}</span></td>
-        <td>${winner}</td>
-        <td>${votes}</td>
-        <td>${date}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="deleteContest(${c.id})">Delete</button></td>
-      </tr>`;
+      html += `<tr><td>${esc(c.title)}</td><td>${c.type_label||'-'}</td><td><span class="status-tag tag-${c.status}">${c.status}</span></td><td>${winner}</td><td>${votes}</td><td><button class="btn btn-danger btn-sm" onclick="deleteContestById(${c.id})">Delete</button></td></tr>`;
     }
     html += '</table>';
   }
   document.getElementById('adminContentArea').innerHTML = html;
+  lucide.createIcons();
 }
-
-async function deleteContest(id) {
-  if (!confirm('Delete contest and all its data?')) return;
-  // Delete related data
-  await db.from('votes').delete().eq('contest_id', id);
-  await db.from('shortlist').delete().eq('contest_id', id);
-  await db.from('suggestions').delete().eq('contest_id', id);
-  await db.from('contests').delete().eq('id', id);
-  renderAllContestsTab();
-}
-
+async function deleteContestById(id) { if (!confirm('Delete?')) return; await db.from('votes').delete().eq('contest_id',id); await db.from('shortlist').delete().eq('contest_id',id); await db.from('suggestions').delete().eq('contest_id',id); await db.from('contests').delete().eq('id',id); renderAllContestsTab(); }
 async function renderEmployeesTab() {
   const { data: emp } = await db.from('employees').select('*').order('employee_id');
   let html = '<div class="page-head"><h2>Employees</h2></div>';
-  if (!emp || emp.length === 0) html += '<p>No employees yet.</p>';
-  else {
-    html += '<table class="admin-table"><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr>';
-    for (const e of emp) {
-      let action = '';
-      if (e.status === 'pending') {
-        action = `<button class="btn btn-accent btn-sm" onclick="approveEmployee('${e.employee_id}')">Approve</button>
-                  <button class="btn btn-secondary btn-sm" onclick="rejectEmployee('${e.employee_id}')">Reject</button>`;
-      } else {
-        action = `<button class="btn btn-secondary btn-sm" onclick="toggleAdmin('${e.employee_id}')">${e.role === 'admin' ? 'Demote' : 'Make Admin'}</button>`;
-      }
-      html += `<tr>
-        <td>${esc(e.employee_id)}</td>
-        <td>${esc(e.full_name)}</td>
-        <td>${e.role}</td>
-        <td><span class="status-tag tag-${e.status==='approved'?'finished':e.status==='pending'?'suggestion':'poll'}">${e.status}</span></td>
-        <td>${action}</td>
-      </tr>`;
-    }
-    html += '</table>';
-  }
+  html += '<table class="admin-table"><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr>';
+  (emp||[]).forEach(e => {
+    let action = '';
+    if (e.status==='pending') action = `<button class="btn btn-accent btn-sm" onclick="approveEmployee('${e.employee_id}')">Approve</button><button class="btn btn-secondary btn-sm" onclick="rejectEmployee('${e.employee_id}')">Reject</button>`;
+    else action = `<button class="btn btn-secondary btn-sm" onclick="toggleAdmin('${e.employee_id}')">${e.role==='admin'?'Demote':'Make Admin'}</button>`;
+    html += `<tr><td>${esc(e.employee_id)}</td><td>${esc(e.full_name)}</td><td>${e.role}</td><td><span class="status-tag tag-${e.status==='approved'?'finished':e.status==='pending'?'suggestion':'poll'}">${e.status}</span></td><td>${action}</td></tr>`;
+  });
+  html += '</table>';
   document.getElementById('adminContentArea').innerHTML = html;
+  lucide.createIcons();
 }
+async function approveEmployee(id) { await db.from('employees').update({status:'approved'}).eq('employee_id',id); renderEmployeesTab(); }
+async function rejectEmployee(id) { await db.from('employees').update({status:'rejected'}).eq('employee_id',id); renderEmployeesTab(); }
+async function toggleAdmin(id) { const { data } = await db.from('employees').select('role').eq('employee_id',id).single(); const newRole = data.role==='admin'?'employee':'admin'; await db.from('employees').update({role:newRole}).eq('employee_id',id); renderEmployeesTab(); }
 
-async function approveEmployee(id) { await db.from('employees').update({ status: 'approved' }).eq('employee_id', id); renderEmployeesTab(); }
-async function rejectEmployee(id) { await db.from('employees').update({ status: 'rejected' }).eq('employee_id', id); renderEmployeesTab(); }
-async function toggleAdmin(id) {
-  const { data: emp } = await db.from('employees').select('role').eq('employee_id', id).single();
-  const newRole = emp.role === 'admin' ? 'employee' : 'admin';
-  await db.from('employees').update({ role: newRole }).eq('employee_id', id);
-  renderEmployeesTab();
-}
-
-function show(id) { document.getElementById(id).classList.remove('hidden'); }
-function hide(id) { document.getElementById(id).classList.add('hidden'); }
-function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
-function setLoading(btnId, loading) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  btn.disabled = loading;
-  if (loading) {
-    btn._orig = btn.innerHTML;
-    btn.innerHTML = '<span class="spinner"></span>';
-  } else {
-    btn.innerHTML = btn._orig || btn.innerHTML;
-  }
-}
+// UTILS
+function show(id){ document.getElementById(id).classList.remove('hidden'); }
+function hide(id){ document.getElementById(id).classList.add('hidden'); }
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function setLoading(id,v){ const b=document.getElementById(id); if(!b)return; b.disabled=v; b.innerHTML=v?'<span class="spinner"></span>':(b._orig||b.innerHTML); }
 </script>
 </body>
 </html>
