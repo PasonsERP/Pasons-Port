@@ -39,8 +39,6 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-
-/* ── BACKGROUND PATTERN ── */
 body::before {
   content: '';
   position: fixed; inset: 0;
@@ -50,8 +48,6 @@ body::before {
   pointer-events: none;
   z-index: 0;
 }
-
-/* ── LAYOUT ── */
 .shell {
   position: relative; z-index: 1;
   min-height: 100vh;
@@ -100,6 +96,7 @@ body::before {
 }
 .btn-logout:hover { background: var(--surface2); }
 
+/* ── LAYOUT ── */
 .main { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 24px 80px; }
 .page { width: 100%; max-width: 560px; }
 .page-wide { width: 100%; max-width: 780px; }
@@ -150,7 +147,7 @@ body::before {
   margin-bottom: 7px;
   letter-spacing: 0.1px;
 }
-.field input {
+.field input, .field select, .field textarea {
   width: 100%;
   padding: 13px 16px;
   border: 1.5px solid var(--border2);
@@ -162,7 +159,7 @@ body::before {
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
 }
-.field input:focus {
+.field input:focus, .field select:focus, .field textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
 }
@@ -356,46 +353,33 @@ body::before {
 }
 .empty-icon { font-size: 36px; margin-bottom: 10px; }
 
-/* ── ADMIN SECTION ── */
-.section-label {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.8px;
-  text-transform: uppercase; color: #9090a8;
-  margin-bottom: 14px;
+/* ── SIDEBAR ── */
+.admin-layout {
+  display: flex; min-height: calc(100vh - 72px);
 }
-.admin-bar {
-  background: linear-gradient(135deg, #1c1c28, #0f0f1a);
-  border-radius: 12px;
-  padding: 16px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 20px;
+.admin-sidebar {
+  width: 240px; background: var(--ink2); color: white;
+  padding: 24px 0; flex-shrink: 0;
 }
-.admin-bar-text { color: rgba(255,255,255,0.75); font-size: 13.5px; }
-.admin-bar-text strong { color: white; }
-
-/* ── ALREADY VOTED ── */
-.voted-banner {
-  background: var(--green-light);
-  border: 1px solid #a7f3d0;
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-size: 14px; color: #065f46;
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 16px;
+.admin-sidebar h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; padding: 0 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 20px; color: white;
+}
+.admin-sidebar a {
+  display: block; padding: 12px 24px; color: #cbd5e1;
+  text-decoration: none; font-size: 14px; transition: 0.2s;
+  cursor: pointer;
+}
+.admin-sidebar a:hover, .admin-sidebar a.active {
+  background: rgba(255,255,255,0.05); color: white;
+}
+.admin-content {
+  flex: 1; padding: 32px; overflow-y: auto;
 }
 
-/* ── SPINNER ── */
-.spinner {
-  width: 20px; height: 20px;
-  border: 2.5px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── STATS ROW ── */
+/* ── STATS ── */
 .stats-row { display: flex; gap: 12px; margin-bottom: 20px; }
 .stat-card {
   flex: 1; background: var(--surface2); border: 1px solid var(--border);
@@ -404,6 +388,15 @@ body::before {
 .stat-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 26px; color: var(--ink); }
 .stat-lbl { font-size: 12px; color: #9090a8; margin-top: 2px; }
 
+/* ── TABLE ── */
+.admin-table {
+  width: 100%; border-collapse: collapse; font-size: 14px;
+}
+.admin-table th, .admin-table td {
+  text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--border);
+}
+.admin-table th { font-weight: 600; color: #475569; font-size: 13px; }
+
 .hidden { display: none !important; }
 .mt8 { margin-top: 8px; }
 .mt16 { margin-top: 16px; }
@@ -411,18 +404,15 @@ body::before {
 .text-center { text-align: center; }
 .text-sm { font-size: 13.5px; color: #6b6b80; }
 
-@media (max-width: 600px) {
-  .top-bar { padding: 14px 20px; }
-  .card { padding: 24px; }
-  .main { padding: 24px 16px 60px; }
-  .stats-row { flex-direction: column; }
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .admin-layout { flex-direction: column; }
+  .admin-sidebar { width: 100%; padding: 12px 16px; }
 }
 </style>
 </head>
 <body>
 <div class="shell">
-
-  <!-- TOP BAR -->
   <header class="top-bar">
     <div class="logo">
       <span class="logo-dot"></span>
@@ -436,7 +426,6 @@ body::before {
   </header>
 
   <main class="main">
-
     <!-- ════════════════════════════════
          PAGE: LOGIN
     ═════════════════════════════════ -->
@@ -483,7 +472,7 @@ body::before {
     </div>
 
     <!-- ════════════════════════════════
-         PAGE: EMPLOYEE — SUGGESTION PHASE
+         PAGE: EMPLOYEE (unchanged UI)
     ═════════════════════════════════ -->
     <div id="pageEmployee" class="page hidden">
       <div id="phaseStrip" class="phase-strip">
@@ -492,7 +481,6 @@ body::before {
         <div class="phase-step" id="ps3">🏆 Results</div>
       </div>
 
-      <!-- SUGGESTION PHASE UI -->
       <div id="empSuggestSection">
         <div class="page-head">
           <h2>Suggest a Brand Name</h2>
@@ -512,7 +500,6 @@ body::before {
         </div>
       </div>
 
-      <!-- POLL PHASE UI -->
       <div id="empPollSection" class="hidden">
         <div class="page-head">
           <h2>Cast Your Vote</h2>
@@ -528,7 +515,6 @@ body::before {
         </div>
       </div>
 
-      <!-- RESULTS PHASE UI -->
       <div id="empResultsSection" class="hidden">
         <div class="page-head">
           <h2>🏆 Final Results</h2>
@@ -539,68 +525,22 @@ body::before {
     </div>
 
     <!-- ════════════════════════════════
-         PAGE: ADMIN DASHBOARD
+         PAGE: ADMIN
     ═════════════════════════════════ -->
     <div id="pageAdmin" class="page-wide hidden">
-      <div id="adminPhaseStrip" class="phase-strip">
-        <div class="phase-step" id="aps1">💡 Suggestion Phase</div>
-        <div class="phase-step" id="aps2">🗳 Poll Phase</div>
-        <div class="phase-step" id="aps3">🏆 Finished</div>
-      </div>
-
-      <!-- ADMIN: SUGGESTION MANAGEMENT -->
-      <div id="adminSugSection">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
-          <div class="page-head" style="margin-bottom:0">
-            <h2>Manage Suggestions</h2>
-            <p>Review all employee suggestions. Select the best ones and launch the poll.</p>
-          </div>
-          <button class="btn btn-accent btn-sm" onclick="launchPoll()" id="launchBtn" style="white-space:nowrap">🚀 Launch Poll with Selected</button>
+      <div class="admin-layout">
+        <div class="admin-sidebar">
+          <h2>Admin Panel</h2>
+          <a href="#" class="active" data-section="overview" onclick="switchAdminTab('overview')">📊 Overview</a>
+          <a href="#" data-section="activeContest" onclick="switchAdminTab('activeContest')">📋 Active Contest</a>
+          <a href="#" data-section="allContests" onclick="switchAdminTab('allContests')">🏆 All Contests</a>
+          <a href="#" data-section="employees" onclick="switchAdminTab('employees')">👥 Employees</a>
         </div>
-        <div id="adminStats" class="stats-row">
-          <div class="stat-card"><div class="stat-val" id="statSugCount">—</div><div class="stat-lbl">Total Suggestions</div></div>
-          <div class="stat-card"><div class="stat-val" id="statEmpCount">—</div><div class="stat-lbl">Employees Participated</div></div>
-          <div class="stat-card"><div class="stat-val" id="statSelectedCount">0</div><div class="stat-lbl">Selected for Poll</div></div>
-        </div>
-        <div class="card card-sm">
-          <div class="section-label">All Suggestions — check to shortlist</div>
-          <div id="adminSugList" class="suggestion-list"></div>
-          <div id="adminSugMsg" class="toast"></div>
+        <div id="adminContentArea" class="admin-content">
+          <!-- dynamically loaded -->
         </div>
       </div>
-
-      <!-- ADMIN: POLL MANAGEMENT -->
-      <div id="adminPollSection" class="hidden">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
-          <div class="page-head" style="margin-bottom:0">
-            <h2>Live Poll</h2>
-            <p>Monitor votes in real-time. End the poll when ready to reveal results.</p>
-          </div>
-          <button class="btn btn-danger btn-sm" onclick="endPoll()">End Poll & Reveal Results</button>
-        </div>
-        <div id="adminPollStats" class="stats-row">
-          <div class="stat-card"><div class="stat-val" id="statTotalVotes">—</div><div class="stat-lbl">Votes Cast</div></div>
-          <div class="stat-card"><div class="stat-val" id="statOptions">—</div><div class="stat-lbl">Options on Poll</div></div>
-        </div>
-        <div class="card card-sm">
-          <div class="section-label">Live Vote Counts</div>
-          <div id="adminPollList"></div>
-        </div>
-        <div id="adminPollMsg" class="toast"></div>
-      </div>
-
-      <!-- ADMIN: RESULTS -->
-      <div id="adminResultSection" class="hidden">
-        <div class="page-head">
-          <h2>🏆 Campaign Results</h2>
-          <p>The poll has concluded. Here are the final standings.</p>
-        </div>
-        <div id="adminResultsList"></div>
-        <div id="adminWinnerCard" style="margin-top:20px;"></div>
-      </div>
-
     </div>
-
   </main>
 </div>
 
@@ -609,8 +549,8 @@ const SUPABASE_URL = 'https://ooalljqzldtqelvvtnri.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vYWxsanF6bGR0cWVsdnZ0bnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjE4NzcsImV4cCI6MjA5MjU5Nzg3N30.KhPqEiCvgDKQLdYX-kLYNRejeNgilZYot6_slYFhYXY';
 
 let db = null;
-let ME = null;        // current employee object
-let CAMPAIGN = null;  // current campaign object
+let ME = null;
+let ACTIVE_CONTEST = null;
 let pollInterval = null;
 
 // ── INIT ────────────────────────────────────────────────
@@ -624,7 +564,6 @@ window.addEventListener('load', () => {
   showPage('pageLogin');
 });
 
-// ── NAVIGATION ──────────────────────────────────────────
 function showPage(id) {
   ['pageLogin','pageRegister','pageEmployee','pageAdmin'].forEach(p => {
     document.getElementById(p).classList.add('hidden');
@@ -652,7 +591,7 @@ function toast(elId, msg, type='info') {
   if (type !== 'error') setTimeout(() => el.classList.remove('show'), 4000);
 }
 
-// ── AUTH ─────────────────────────────────────────────────
+// ── LOGIN ───────────────────────────────────────────────
 async function login() {
   const raw = document.getElementById('loginId').value.trim();
   if (!raw) { toast('loginMsg','Please enter your Employee ID.','error'); return; }
@@ -661,29 +600,29 @@ async function login() {
 
   const { data, error } = await db.from('employees').select('*').eq('employee_id', id).maybeSingle();
   if (error || !data) {
-    // try original case
-    const { data: d2 } = await db.from('employees').select('*').eq('employee_id', raw).maybeSingle();
-    if (!d2) {
-      toast('loginMsg','Employee ID not found. Please register first.','error');
-      setLoading('loginBtn', false);
-      return;
-    }
-    ME = d2;
-  } else {
-    ME = data;
+    toast('loginMsg','Employee ID not found. Please register first.','error');
+    setLoading('loginBtn', false);
+    return;
+  }
+  ME = data;
+
+  if (ME.status !== 'approved') {
+    toast('loginMsg','⏳ Your account is pending approval by admin.','error');
+    setLoading('loginBtn', false);
+    return;
   }
 
   toast('loginMsg','Welcome back, ' + (ME.full_name || ME.employee_id) + '!','success');
   setLoading('loginBtn', false);
   showTopBar(true);
 
-  await loadCampaign();
+  await loadActiveContest();
   if (ME.role === 'admin') {
-    await renderAdminDashboard();
     showPage('pageAdmin');
+    switchAdminTab('overview');
   } else {
-    await renderEmployeePage();
     showPage('pageEmployee');
+    await renderEmployeeView();
   }
 }
 
@@ -693,45 +632,46 @@ async function register() {
   if (!id || !name) { toast('regMsg','All fields are required.','error'); return; }
   setLoading('regBtn', true);
 
-  const { error } = await db.from('employees').insert({ employee_id: id, full_name: name, role: 'employee' });
+  const { error } = await db.from('employees').insert({ employee_id: id, full_name: name, role: 'employee', status: 'pending' });
   if (error) {
     const msg = (error.code === '23505' || error.message.includes('duplicate'))
       ? 'This Employee ID is already registered.'
       : error.message;
     toast('regMsg', msg, 'error');
   } else {
-    toast('regMsg', '✅ Account created! Signing you in...', 'success');
-    setTimeout(() => {
-      document.getElementById('loginId').value = id;
-      showPage('pageLogin');
-      login();
-    }, 1200);
+    toast('regMsg', '✅ Account created! Awaiting admin approval. You can log in once approved.','success');
   }
   setLoading('regBtn', false);
 }
 
 function logout() {
-  ME = null; CAMPAIGN = null;
+  ME = null; ACTIVE_CONTEST = null;
   if (pollInterval) clearInterval(pollInterval);
   showTopBar(false);
   document.getElementById('loginId').value = '';
-  document.getElementById('loginMsg').className = 'toast';
   showPage('pageLogin');
 }
 
-// ── CAMPAIGN LOAD ────────────────────────────────────────
-async function loadCampaign() {
-  const { data } = await db.from('campaigns').select('*').order('id',{ascending:false}).limit(1).maybeSingle();
-  CAMPAIGN = data;
-  return CAMPAIGN;
+// ── ACTIVE CONTEST LOADING ──────────────────────────────
+async function loadActiveContest() {
+  const { data } = await db.from('contests').select('*').neq('status','finished').order('id',{ascending:false}).limit(1).maybeSingle();
+  ACTIVE_CONTEST = data;
+  return ACTIVE_CONTEST;
 }
 
-// ── PHASE STRIP ──────────────────────────────────────────
-function setPhaseStrip(status, prefix='') {
+// ════════════════════════════════════════════════════════
+//  EMPLOYEE VIEW (unchanged logic, uses ACTIVE_CONTEST)
+// ════════════════════════════════════════════════════════
+async function renderEmployeeView() {
+  if (!ACTIVE_CONTEST) {
+    document.getElementById('empSuggestSection').innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No active campaign at the moment.</div>';
+    return;
+  }
+
+  const status = ACTIVE_CONTEST.status;
+  // set phase strip
   const phases = ['suggestion','poll','finished'];
-  const ids = prefix
-    ? ['aps1','aps2','aps3']
-    : ['ps1','ps2','ps3'];
+  const ids = ['ps1','ps2','ps3'];
   const idx = phases.indexOf(status);
   ids.forEach((id, i) => {
     const el = document.getElementById(id);
@@ -740,25 +680,12 @@ function setPhaseStrip(status, prefix='') {
     if (i < idx) el.classList.add('done');
     else if (i === idx) el.classList.add('active');
   });
-}
-
-// ════════════════════════════════════════════════════════
-//  EMPLOYEE VIEW
-// ════════════════════════════════════════════════════════
-async function renderEmployeePage() {
-  if (!CAMPAIGN) {
-    document.getElementById('empSuggestSection').innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No active campaign at the moment. Check back soon!</div>';
-    return;
-  }
-
-  const status = CAMPAIGN.status;
-  setPhaseStrip(status);
 
   hide('empSuggestSection'); hide('empPollSection'); hide('empResultsSection');
 
   if (status === 'suggestion') {
     show('empSuggestSection');
-    document.getElementById('campDesc').textContent = CAMPAIGN.description || 'Share your creative idea for our new brand name.';
+    document.getElementById('campDesc').textContent = ACTIVE_CONTEST.description || 'Share your creative idea.';
     await loadEmpSuggestions();
   } else if (status === 'poll') {
     show('empPollSection');
@@ -772,7 +699,7 @@ async function renderEmployeePage() {
 async function loadEmpSuggestions() {
   const { data } = await db.from('suggestions')
     .select('id, name_text, employee_id, employees(full_name)')
-    .eq('campaign_id', CAMPAIGN.id)
+    .eq('contest_id', ACTIVE_CONTEST.id)
     .order('id', {ascending: false});
 
   const container = document.getElementById('empSugList');
@@ -796,7 +723,7 @@ async function submitSuggestion() {
   setLoading('sugBtn', true);
 
   const { error } = await db.from('suggestions').insert({
-    campaign_id: CAMPAIGN.id,
+    contest_id: ACTIVE_CONTEST.id,
     employee_id: ME.employee_id,
     name_text: text
   });
@@ -812,16 +739,15 @@ async function submitSuggestion() {
 }
 
 async function loadEmpPoll() {
-  // check if already voted
   const { data: myVote } = await db.from('votes')
     .select('id, shortlist_id')
-    .eq('campaign_id', CAMPAIGN.id)
+    .eq('contest_id', ACTIVE_CONTEST.id)
     .eq('employee_id', ME.employee_id)
     .maybeSingle();
 
   const { data: opts } = await db.from('shortlist')
     .select('id, suggestions(name_text)')
-    .eq('campaign_id', CAMPAIGN.id);
+    .eq('contest_id', ACTIVE_CONTEST.id);
 
   const container = document.getElementById('pollOptionsList');
   const actions = document.getElementById('voteActions');
@@ -842,7 +768,6 @@ async function loadEmpPoll() {
 
   container.innerHTML = opts.map(o => {
     const selected = myVote && myVote.shortlist_id === o.id ? 'selected' : '';
-    const disabled = myVote ? 'disabled' : '';
     return `<label class="vote-option ${selected}" onclick="selectVote(this)">
       <input type="radio" class="vote-radio" name="voteOpt" value="${o.id}" ${myVote?'disabled':''} ${selected?'checked':''}>
       <span class="vote-label">${esc(o.suggestions?.name_text || 'Unknown')}</span>
@@ -861,7 +786,7 @@ async function submitVote() {
   setLoading('voteBtn', true);
 
   const { error } = await db.from('votes').insert({
-    campaign_id: CAMPAIGN.id,
+    contest_id: ACTIVE_CONTEST.id,
     employee_id: ME.employee_id,
     shortlist_id: parseInt(sel.value)
   });
@@ -882,9 +807,9 @@ async function submitVote() {
 
 async function loadEmpResults() {
   const { data: shortlist } = await db.from('shortlist')
-    .select('id, suggestions(name_text)').eq('campaign_id', CAMPAIGN.id);
+    .select('id, suggestions(name_text)').eq('contest_id', ACTIVE_CONTEST.id);
   const { data: votes } = await db.from('votes')
-    .select('shortlist_id').eq('campaign_id', CAMPAIGN.id);
+    .select('shortlist_id').eq('contest_id', ACTIVE_CONTEST.id);
 
   const counts = {};
   (votes||[]).forEach(v => counts[v.shortlist_id] = (counts[v.shortlist_id]||0)+1);
@@ -902,110 +827,159 @@ async function loadEmpResults() {
 }
 
 // ════════════════════════════════════════════════════════
-//  ADMIN VIEW
+//  ADMIN SIDEBAR + TABS
 // ════════════════════════════════════════════════════════
-async function renderAdminDashboard() {
-  if (!CAMPAIGN) {
-    document.getElementById('pageAdmin').innerHTML = `
-      <div class="card" style="text-align:center;padding:48px 32px;">
-        <div style="font-size:48px;margin-bottom:16px;">📭</div>
-        <h2 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;">No Campaign Found</h2>
-        <p style="color:#6b6b80;">Create a campaign row in Supabase with status = 'suggestion' to begin.</p>
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
+  document.querySelector(`.admin-sidebar a[data-section="${tab}"]`).classList.add('active');
+  const area = document.getElementById('adminContentArea');
+
+  switch(tab) {
+    case 'overview': renderAdminOverview(); break;
+    case 'activeContest': renderActiveContestTab(); break;
+    case 'allContests': renderAllContestsTab(); break;
+    case 'employees': renderEmployeesTab(); break;
+  }
+}
+
+async function renderAdminOverview() {
+  const { count: empCount } = await db.from('employees').select('*', { count: 'exact', head: true });
+  const { data: contests } = await db.from('contests').select('*');
+  const active = contests?.filter(c => c.status !== 'finished').length || 0;
+  const finished = contests?.filter(c => c.status === 'finished').length || 0;
+
+  document.getElementById('adminContentArea').innerHTML = `
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val">${empCount || 0}</div><div class="stat-lbl">Registered Employees</div></div>
+      <div class="stat-card"><div class="stat-val">${active}</div><div class="stat-lbl">Active Contests</div></div>
+      <div class="stat-card"><div class="stat-val">${finished}</div><div class="stat-lbl">Finished Contests</div></div>
+    </div>
+    <div class="card">
+      <h2 style="font-family:'Syne',sans-serif;">Quick Actions</h2>
+      <button class="btn btn-accent btn-sm mt16" onclick="switchAdminTab('activeContest')">Manage Active Contest</button>
+      <button class="btn btn-secondary btn-sm mt8" onclick="switchAdminTab('employees')">Review Employees</button>
+    </div>
+  `;
+}
+
+async function renderActiveContestTab() {
+  await loadActiveContest();
+  if (!ACTIVE_CONTEST) {
+    document.getElementById('adminContentArea').innerHTML = `
+      <div class="page-head"><h2>Create New Contest</h2></div>
+      <div class="card">
+        <div class="field"><label>Contest Title</label><input type="text" id="newTitle" placeholder="e.g. New Brand Name"></div>
+        <div class="field"><label>Description</label><input type="text" id="newDesc" placeholder="Short description"></div>
+        <div class="field"><label>Type Label</label><input type="text" id="newType" placeholder="e.g. Product, Campaign"></div>
+        <div class="field"><label>Suggestion Deadline</label><input type="datetime-local" id="newDeadline"></div>
+        <button class="btn btn-accent" onclick="createContest()">Create Contest</button>
+        <div id="createMsg" class="toast"></div>
       </div>`;
     return;
   }
 
-  const status = CAMPAIGN.status;
-  setPhaseStrip(status, 'admin');
+  // Active contest exists – show management
+  let html = `<div class="page-head"><h2>Active Contest: ${esc(ACTIVE_CONTEST.title)}</h2><span class="status-tag tag-${ACTIVE_CONTEST.status}">${ACTIVE_CONTEST.status}</span></div>`;
+  if (ACTIVE_CONTEST.status === 'suggestion') {
+    html += renderAdminSuggestionSection();
+  } else if (ACTIVE_CONTEST.status === 'poll') {
+    html += renderAdminPollSection();
+  } else if (ACTIVE_CONTEST.status === 'finished') {
+    html += renderAdminResultSection();
+  }
+  document.getElementById('adminContentArea').innerHTML = html;
 
-  hide('adminSugSection'); hide('adminPollSection'); hide('adminResultSection');
-
-  if (status === 'suggestion') {
-    show('adminSugSection');
-    await loadAdminSuggestions();
-    // auto-refresh every 15s
+  // load dynamic data
+  if (ACTIVE_CONTEST.status === 'suggestion') {
+    await loadAdminSuggestionsForCurrent();
+  } else if (ACTIVE_CONTEST.status === 'poll') {
+    await loadAdminPollData();
     if (pollInterval) clearInterval(pollInterval);
-    pollInterval = setInterval(loadAdminSuggestions, 15000);
-  } else if (status === 'poll') {
-    show('adminPollSection');
-    await loadAdminPoll();
-    if (pollInterval) clearInterval(pollInterval);
-    pollInterval = setInterval(loadAdminPoll, 8000);
-  } else if (status === 'finished') {
-    show('adminResultSection');
+    pollInterval = setInterval(loadAdminPollData, 8000);
+  } else if (ACTIVE_CONTEST.status === 'finished') {
     await loadAdminResults();
   }
 }
 
-async function loadAdminSuggestions() {
+function renderAdminSuggestionSection() {
+  return `
+    <div class="card card-sm" style="margin-bottom:16px;">
+      <div class="section-label">Submit Your Own Suggestion</div>
+      <div style="display:flex;gap:10px;">
+        <input type="text" id="adminSugInput" placeholder="Add a brand name..." style="flex:1;" onkeydown="if(event.key==='Enter')submitAdminSuggestion()"/>
+        <button class="btn btn-accent btn-sm" onclick="submitAdminSuggestion()">+ Add</button>
+      </div>
+      <div id="adminOwnSugMsg" class="toast"></div>
+    </div>
+    <div class="card card-sm">
+      <div class="section-label">All Suggestions — check to shortlist</div>
+      <div id="adminSugList" class="suggestion-list"></div>
+      <button class="btn btn-danger mt16" onclick="launchPoll()">🚀 Launch Poll with Selected</button>
+      <div id="adminSugMsg" class="toast"></div>
+    </div>
+  `;
+}
+
+async function submitAdminSuggestion() {
+  const text = document.getElementById('adminSugInput').value.trim();
+  if (!text) { toast('adminOwnSugMsg','Please type a brand name.','error'); return; }
+  const { error } = await db.from('suggestions').insert({ contest_id: ACTIVE_CONTEST.id, employee_id: ME.employee_id, name_text: text });
+  if (error) toast('adminOwnSugMsg', error.message, 'error');
+  else {
+    toast('adminOwnSugMsg', '✅ Suggestion added!', 'success');
+    document.getElementById('adminSugInput').value = '';
+    await loadAdminSuggestionsForCurrent();
+  }
+}
+
+async function loadAdminSuggestionsForCurrent() {
   const { data } = await db.from('suggestions')
     .select('id, name_text, employee_id, employees(full_name)')
-    .eq('campaign_id', CAMPAIGN.id)
+    .eq('contest_id', ACTIVE_CONTEST.id)
     .order('id', {ascending: true});
-
-  const empSet = new Set((data||[]).map(s=>s.employee_id));
-  document.getElementById('statSugCount').textContent = data?.length || 0;
-  document.getElementById('statEmpCount').textContent = empSet.size;
-
   const container = document.getElementById('adminSugList');
   if (!data || data.length === 0) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">💭</div>No suggestions yet. Employees are still submitting.</div>';
+    container.innerHTML = '<div class="empty"><div class="empty-icon">💭</div>No suggestions yet.</div>';
     return;
   }
   container.innerHTML = data.map(s => `
     <div class="sug-item">
       <span class="sug-name">${esc(s.name_text)}</span>
       <span class="sug-by">${esc(s.employees?.full_name || s.employee_id)}</span>
-      <div class="check-wrap">
-        <input type="checkbox" class="sug-check shortlist-cb" value="${s.id}" onchange="updateSelectedCount()"/>
-      </div>
+      <input type="checkbox" class="sug-check shortlist-cb" value="${s.id}">
     </div>`).join('');
-}
-
-function updateSelectedCount() {
-  const n = document.querySelectorAll('.shortlist-cb:checked').length;
-  document.getElementById('statSelectedCount').textContent = n;
 }
 
 async function launchPoll() {
   const checks = document.querySelectorAll('.shortlist-cb:checked');
   const ids = Array.from(checks).map(c=>parseInt(c.value));
-  if (ids.length < 2) { toast('adminSugMsg','Please select at least 2 suggestions for a fair poll.','error'); return; }
-
-  setLoading('launchBtn', true);
-
-  const inserts = ids.map(sid => ({ campaign_id: CAMPAIGN.id, suggestion_id: sid }));
-  const { error: e1 } = await db.from('shortlist').insert(inserts);
-  if (e1) { toast('adminSugMsg', e1.message, 'error'); setLoading('launchBtn',false); return; }
-
-  const { error: e2 } = await db.from('campaigns')
-    .update({ status: 'poll', poll_start: new Date().toISOString() })
-    .eq('id', CAMPAIGN.id);
-
-  if (e2) { toast('adminSugMsg', e2.message, 'error'); setLoading('launchBtn',false); return; }
-
-  CAMPAIGN.status = 'poll';
-  toast('adminSugMsg','🚀 Poll is now live!','success');
-  setLoading('launchBtn',false);
-  setTimeout(() => renderAdminDashboard(), 1000);
+  if (ids.length < 2) { toast('adminSugMsg','Select at least 2 suggestions.','error'); return; }
+  for (const sid of ids) {
+    await db.from('shortlist').insert({ contest_id: ACTIVE_CONTEST.id, suggestion_id: sid });
+  }
+  await db.from('contests').update({ status: 'poll', poll_start: new Date().toISOString() }).eq('id', ACTIVE_CONTEST.id);
+  ACTIVE_CONTEST.status = 'poll';
+  toast('adminSugMsg','Poll is now live!','success');
+  setTimeout(() => switchAdminTab('activeContest'), 1500);
 }
 
-async function loadAdminPoll() {
-  const { data: shortlist } = await db.from('shortlist')
-    .select('id, suggestions(name_text)').eq('campaign_id', CAMPAIGN.id);
-  const { data: votes } = await db.from('votes')
-    .select('shortlist_id').eq('campaign_id', CAMPAIGN.id);
+function renderAdminPollSection() {
+  return `
+    <div class="card card-sm">
+      <div class="section-label">Live Vote Counts</div>
+      <div id="adminPollList"></div>
+      <button class="btn btn-danger mt16" onclick="endPoll()">End Poll & Reveal Results</button>
+      <div id="adminPollMsg" class="toast"></div>
+    </div>
+  `;
+}
 
-  const counts = {};
-  (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+async function loadAdminPollData() {
+  const { data: shortlist } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id', ACTIVE_CONTEST.id);
+  const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id', ACTIVE_CONTEST.id);
+  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
   const total = (votes||[]).length;
-  const opts = (shortlist||[]).map(s=>({
-    id: s.id, name: s.suggestions?.name_text||'Unknown', count: counts[s.id]||0
-  })).sort((a,b)=>b.count-a.count);
-
-  document.getElementById('statTotalVotes').textContent = total;
-  document.getElementById('statOptions').textContent = opts.length;
-
+  const opts = (shortlist||[]).map(s=>({ name: s.suggestions?.name_text, count: counts[s.id]||0 })).sort((a,b)=>b.count-a.count);
   document.getElementById('adminPollList').innerHTML = opts.map(o => {
     const pct = total ? Math.round(o.count/total*100) : 0;
     return `<div class="vote-option" style="cursor:default;margin-bottom:10px;">
@@ -1017,55 +991,124 @@ async function loadAdminPoll() {
 }
 
 async function endPoll() {
-  if (!confirm('End the poll and reveal results to all employees?')) return;
+  if (!confirm('End the poll and reveal results?')) return;
+  await db.from('contests').update({ status: 'finished', poll_end: new Date().toISOString() }).eq('id', ACTIVE_CONTEST.id);
+  ACTIVE_CONTEST.status = 'finished';
+  switchAdminTab('activeContest');
+}
 
-  const { error } = await db.from('campaigns')
-    .update({ status: 'finished', poll_end: new Date().toISOString() })
-    .eq('id', CAMPAIGN.id);
-
-  if (error) { toast('adminPollMsg', error.message, 'error'); return; }
-
-  CAMPAIGN.status = 'finished';
-  if (pollInterval) clearInterval(pollInterval);
-  await renderAdminDashboard();
+function renderAdminResultSection() {
+  return `
+    <div class="page-head"><h2>🏆 Campaign Results</h2></div>
+    <div id="adminResultsList"></div>
+  `;
 }
 
 async function loadAdminResults() {
-  const { data: shortlist } = await db.from('shortlist')
-    .select('id, suggestions(name_text)').eq('campaign_id', CAMPAIGN.id);
-  const { data: votes } = await db.from('votes')
-    .select('shortlist_id').eq('campaign_id', CAMPAIGN.id);
-
-  const counts = {};
-  (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const { data: shortlist } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id', ACTIVE_CONTEST.id);
+  const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id', ACTIVE_CONTEST.id);
+  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
   const total = (votes||[]).length;
-  const results = (shortlist||[]).map(s=>({
-    name: s.suggestions?.name_text||'Unknown', count: counts[s.id]||0
-  })).sort((a,b)=>b.count-a.count);
-
-  document.getElementById('adminResultsList').innerHTML = results.map((r,i)=>`
+  const results = (shortlist||[]).map(s=>({ name: s.suggestions?.name_text||'Unknown', count: counts[s.id]||0 })).sort((a,b)=>b.count-a.count);
+  let html = results.map((r,i) => `
     <div class="result-item ${i===0?'winner':''}">
       <span class="result-rank">${i===0?'🏆':`#${i+1}`}</span>
       <span class="result-name">${esc(r.name)}</span>
-      <div class="vote-bar-wrap" style="max-width:160px"><div class="vote-bar" style="width:${total?Math.round(r.count/total*100):0}%"></div></div>
-      <span class="result-votes">${r.count} vote${r.count!==1?'s':''} &middot; ${total?Math.round(r.count/total*100):0}%</span>
+      <span class="result-votes">${r.count} vote${r.count!==1?'s':''} (${total?Math.round(r.count/total*100):0}%)</span>
     </div>`).join('');
-
   if (results[0]) {
-    document.getElementById('adminWinnerCard').innerHTML = `
-      <div style="background:linear-gradient(135deg,#fef9ec,#fffbf0);border:1.5px solid #fbbf24;border-radius:16px;padding:28px 24px;text-align:center;">
-        <div style="font-size:40px;margin-bottom:12px;">🎉</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#92400e;margin-bottom:6px;">${esc(results[0].name)}</div>
-        <div style="color:#a16207;font-size:14px;">Winning brand name · ${results[0].count} vote${results[0].count!==1?'s':''}</div>
-      </div>`;
+    html += `<div style="background:linear-gradient(135deg,#fef9ec,#fffbf0);border:1.5px solid #fbbf24;border-radius:16px;padding:28px 24px;text-align:center;margin-top:20px;">
+      <div style="font-size:40px;">🎉</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#92400e;">${esc(results[0].name)}</div>
+      <div style="color:#a16207;">Winning brand name · ${results[0].count} vote${results[0].count!==1?'s':''}</div>
+    </div>`;
+  }
+  document.getElementById('adminResultsList').innerHTML = html;
+}
+
+async function createContest() {
+  const title = document.getElementById('newTitle').value.trim();
+  const desc = document.getElementById('newDesc').value.trim();
+  const type = document.getElementById('newType').value.trim();
+  const deadline = document.getElementById('newDeadline').value;
+  if (!title || !deadline) { toast('createMsg','Title and deadline required.','error'); return; }
+  const { data, error } = await db.from('contests').insert({
+    title, description: desc, type_label: type,
+    suggestion_end: new Date(deadline).toISOString(),
+    status: 'suggestion', created_by: ME.employee_id
+  }).select().single();
+  if (error) toast('createMsg', error.message, 'error');
+  else {
+    ACTIVE_CONTEST = data;
+    toast('createMsg', '✅ Contest created!', 'success');
+    setTimeout(() => switchAdminTab('activeContest'), 1200);
   }
 }
 
-// ── UTILITIES ────────────────────────────────────────────
-function show(id){ document.getElementById(id).classList.remove('hidden'); }
-function hide(id){ document.getElementById(id).classList.add('hidden'); }
-function esc(str){ const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+async function renderAllContestsTab() {
+  const { data: contests } = await db.from('contests').select('*').order('id', {ascending: false});
+  let html = '<div class="page-head"><h2>All Contests</h2></div>';
+  if (!contests || contests.length === 0) html += '<p>No contests found.</p>';
+  else {
+    html += '<table class="admin-table"><tr><th>Title</th><th>Type</th><th>Status</th><th>Winner</th><th>Votes</th><th>Date</th></tr>';
+    for (const c of contests) {
+      let winner = '—', votes = '—';
+      if (c.status === 'finished') {
+        const { data: win } = await db.from('shortlist').select('suggestions(name_text), votes(count)').eq('contest_id', c.id).order('count', {ascending:false, foreignTable: 'votes'}).limit(1).maybeSingle();
+        if (win) { winner = win.suggestions?.name_text || '?'; votes = win.count; }
+      }
+      html += `<tr>
+        <td>${esc(c.title)}</td>
+        <td>${c.type_label || '—'}</td>
+        <td><span class="status-tag tag-${c.status}">${c.status}</span></td>
+        <td>${winner}</td>
+        <td>${votes}</td>
+        <td>${new Date(c.created_at || c.suggestion_end).toLocaleDateString()}</td>
+      </tr>`;
+    }
+    html += '</table>';
+  }
+  document.getElementById('adminContentArea').innerHTML = html;
+}
 
+async function renderEmployeesTab() {
+  const { data: emp } = await db.from('employees').select('*').order('employee_id');
+  let html = '<div class="page-head"><h2>Employees</h2></div>';
+  if (!emp || emp.length === 0) html += '<p>No employees yet.</p>';
+  else {
+    html += '<table class="admin-table"><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr>';
+    for (const e of emp) {
+      let action = '';
+      if (e.status === 'pending') {
+        action = `<button class="btn btn-accent btn-sm" onclick="approveEmployee('${e.employee_id}')">Approve</button>
+                  <button class="btn btn-secondary btn-sm" onclick="rejectEmployee('${e.employee_id}')">Reject</button>`;
+      }
+      html += `<tr>
+        <td>${esc(e.employee_id)}</td>
+        <td>${esc(e.full_name)}</td>
+        <td>${e.role}</td>
+        <td><span class="status-tag tag-${e.status==='approved'?'finished':e.status==='pending'?'suggestion':'poll'}">${e.status}</span></td>
+        <td>${action}</td>
+      </tr>`;
+    }
+    html += '</table>';
+  }
+  document.getElementById('adminContentArea').innerHTML = html;
+}
+
+async function approveEmployee(empId) {
+  await db.from('employees').update({ status: 'approved' }).eq('employee_id', empId);
+  renderEmployeesTab();
+}
+async function rejectEmployee(empId) {
+  await db.from('employees').update({ status: 'rejected' }).eq('employee_id', empId);
+  renderEmployeesTab();
+}
+
+// ── UTILITIES ────────────────────────────────────────────
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function setLoading(btnId, loading) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
