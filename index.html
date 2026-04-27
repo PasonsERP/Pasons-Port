@@ -1,534 +1,1082 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Poll Portal</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: #f0f2f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .container {
-      background: #ffffff;
-      border-radius: 24px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-      padding: 40px;
-      max-width: 640px;
-      width: 100%;
-    }
-    h1 {
-      font-size: 28px;
-      color: #1e293b;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-    h2 {
-      font-size: 18px;
-      color: #475569;
-      margin-bottom: 24px;
-      text-align: center;
-      font-weight: 400;
-    }
-    .card {
-      background: #f8fafc;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 1px solid #e2e8f0;
-    }
-    label {
-      display: block;
-      font-weight: 500;
-      color: #334155;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      font-size: 15px;
-      font-family: inherit;
-      transition: all 0.2s;
-      background: white;
-    }
-    input:focus, select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: 0.3px;
-      transition: background 0.2s, transform 0.1s;
-    }
-    button:hover { background: #1d4ed8; }
-    button:active { transform: scale(0.98); }
-    button.secondary {
-      background: #64748b;
-    }
-    button.secondary:hover { background: #475569; }
-    .inline-group { display: flex; gap: 12px; }
-    .inline-group > * { flex: 1; }
-    .message {
-      margin-top: 12px;
-      font-size: 14px;
-      min-height: 20px;
-    }
-    .success { color: #16a34a; }
-    .error { color: #dc2626; }
-    .info { color: #2563eb; }
-    .option-item {
-      display: flex;
-      align-items: center;
-      padding: 12px;
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      border: 1px solid #e2e8f0;
-    }
-    .option-item input[type="radio"] { width: auto; margin-right: 12px; }
-    .option-item label { margin-bottom: 0; flex: 1; cursor: pointer; }
-    .suggestion-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      background: white;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-    .badge {
-      background: #dbeafe;
-      color: #1e40af;
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .logout {
-      text-align: right;
-      margin-bottom: 16px;
-    }
-    .logout a { color: #3b82f6; text-decoration: none; font-size: 14px; cursor: pointer; }
-    .hidden { display: none !important; }
-    .admin-section {
-      border-top: 2px dashed #cbd5e1;
-      margin-top: 24px;
-      padding-top: 24px;
-    }
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .result-row span:first-child { font-weight: 500; }
-    .vote-count { font-weight: 600; color: #2563eb; }
-    hr { margin: 24px 0; border: none; border-top: 1px solid #e2e8f0; }
-    @media (max-width: 500px) {
-      .container { padding: 24px; }
-      .inline-group { flex-direction: column; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pasons Port — Brand Name Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root {
+  --ink: #0a0a0f;
+  --ink2: #1c1c28;
+  --surface: #ffffff;
+  --surface2: #f4f4f8;
+  --surface3: #ebebf2;
+  --accent: #4f46e5;
+  --accent2: #7c3aed;
+  --accent-light: #ede9fe;
+  --green: #059669;
+  --green-light: #d1fae5;
+  --amber: #d97706;
+  --amber-light: #fef3c7;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --border: rgba(10,10,15,0.08);
+  --border2: rgba(10,10,15,0.14);
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow: 0 2px 16px rgba(10,10,15,0.07), 0 1px 4px rgba(10,10,15,0.04);
+  --shadow-lg: 0 8px 40px rgba(10,10,15,0.12), 0 2px 8px rgba(10,10,15,0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #f0f0f7;
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── BACKGROUND PATTERN ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(79,70,229,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── LAYOUT ── */
+.shell {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: inline-block;
+}
+.user-chip {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13.5px; color: var(--ink);
+}
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-logout {
+  background: none; border: 1px solid var(--border2);
+  color: var(--ink); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; padding: 6px 14px; border-radius: 8px;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-logout:hover { background: var(--surface2); }
+
+.main { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 24px 80px; }
+.page { width: 100%; max-width: 560px; }
+.page-wide { width: 100%; max-width: 780px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 36px;
+  margin-bottom: 20px;
+}
+.card-sm { padding: 24px; }
+
+/* ── AUTH PAGE ── */
+.auth-hero {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.auth-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.auth-hero p { color: #6b6b80; font-size: 15px; }
+.phase-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-light); color: var(--accent);
+  font-size: 11.5px; font-weight: 500;
+  padding: 5px 12px; border-radius: 100px;
+  margin-bottom: 20px;
+  letter-spacing: 0.2px;
+}
+.phase-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.8)} }
+
+/* ── FORM ELEMENTS ── */
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-size: 13px; font-weight: 500;
+  color: #5a5a72;
+  margin-bottom: 7px;
+  letter-spacing: 0.1px;
+}
+.field input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+.field input::placeholder { color: #b0b0c8; }
+
+/* ── BUTTONS ── */
+.btn {
+  width: 100%;
+  padding: 14px 20px;
+  border: none; border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500; font-size: 15px;
+  cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary {
+  background: var(--ink);
+  color: white;
+}
+.btn-primary:hover { background: var(--ink2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(10,10,15,0.2); }
+.btn-primary:active { transform: translateY(0); }
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--ink);
+  border: 1px solid var(--border2);
+}
+.btn-secondary:hover { background: var(--surface3); }
+.btn-accent {
+  background: var(--accent);
+  color: white;
+}
+.btn-accent:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79,70,229,0.35); }
+.btn-danger {
+  background: var(--red);
+  color: white;
+}
+.btn-danger:hover { opacity: 0.9; }
+.btn-sm { padding: 9px 18px; font-size: 13.5px; width: auto; border-radius: 10px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+/* ── LINK ── */
+.link-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--accent); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; text-decoration: underline; text-underline-offset: 3px;
+  padding: 0;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0; color: #b0b0c8; font-size: 13px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── TOASTS / MESSAGES ── */
+.toast {
+  padding: 13px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-top: 14px;
+  display: none;
+}
+.toast.show { display: block; }
+.toast-success { background: var(--green-light); color: #065f46; }
+.toast-error { background: var(--red-light); color: #991b1b; }
+.toast-info { background: var(--accent-light); color: #3730a3; }
+
+/* ── PHASE INDICATOR ── */
+.phase-strip {
+  display: flex; gap: 0;
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 28px;
+  border: 1px solid var(--border);
+}
+.phase-step {
+  flex: 1; text-align: center;
+  padding: 9px 8px;
+  border-radius: 9px;
+  font-size: 12.5px; font-weight: 500;
+  color: #9090a8;
+  transition: all 0.2s;
+}
+.phase-step.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 4px rgba(10,10,15,0.1);
+}
+.phase-step.done { color: var(--green); }
+
+/* ── PAGE HEADINGS ── */
+.page-head {
+  margin-bottom: 28px;
+}
+.page-head h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.4px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.page-head p { color: #6b6b80; font-size: 14.5px; }
+
+/* ── SUGGESTION ITEM ── */
+.suggestion-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.sug-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14.5px;
+  gap: 10px;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.sug-item .sug-name { font-weight: 500; color: var(--ink); flex: 1; }
+.sug-item .sug-by { font-size: 12.5px; color: #9090a8; }
+.sug-item .check-wrap { display: flex; align-items: center; }
+.sug-check {
+  width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer;
+}
+.sug-own-badge {
+  font-size: 11px; padding: 2px 8px;
+  background: var(--accent-light); color: var(--accent);
+  border-radius: 100px; font-weight: 500;
+}
+
+/* ── VOTE OPTION ── */
+.vote-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.vote-option {
+  display: flex; align-items: center; gap: 14px;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.18s;
+  background: var(--surface);
+}
+.vote-option:hover { border-color: var(--accent); background: #fbfaff; }
+.vote-option.selected { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+.vote-radio { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+.vote-label { font-size: 15px; font-weight: 500; color: var(--ink); }
+.voted-label { font-size: 15px; font-weight: 500; color: var(--ink); flex: 1; }
+.vote-bar-wrap { flex: 1; height: 6px; background: var(--surface3); border-radius: 100px; overflow: hidden; }
+.vote-bar { height: 100%; background: var(--accent); border-radius: 100px; transition: width 0.5s ease; }
+.vote-count-label { font-size: 13px; color: #6b6b80; min-width: 44px; text-align: right; font-weight: 500; }
+
+/* ── RESULT ITEM ── */
+.result-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.result-item.winner {
+  background: linear-gradient(135deg, #fef9ec, #fffbf0);
+  border-color: #fbbf24;
+}
+.result-rank {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 20px;
+  color: #b0b0c8; width: 28px; text-align: center;
+}
+.result-item.winner .result-rank { color: #f59e0b; }
+.result-name { flex: 1; font-weight: 500; font-size: 15.5px; }
+.result-votes { font-size: 13px; color: #6b6b80; white-space: nowrap; }
+.crown { font-size: 18px; }
+
+/* ── STATUS TAG ── */
+.status-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 500; padding: 4px 11px;
+  border-radius: 100px;
+}
+.tag-suggestion { background: var(--amber-light); color: #92400e; }
+.tag-poll { background: var(--accent-light); color: #3730a3; }
+.tag-finished { background: var(--green-light); color: #065f46; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 32px 16px;
+  color: #9090a8; font-size: 14px;
+}
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+/* ── ADMIN SECTION ── */
+.section-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.8px;
+  text-transform: uppercase; color: #9090a8;
+  margin-bottom: 14px;
+}
+.admin-bar {
+  background: linear-gradient(135deg, #1c1c28, #0f0f1a);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.admin-bar-text { color: rgba(255,255,255,0.75); font-size: 13.5px; }
+.admin-bar-text strong { color: white; }
+
+/* ── ALREADY VOTED ── */
+.voted-banner {
+  background: var(--green-light);
+  border: 1px solid #a7f3d0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px; color: #065f46;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* ── SPINNER ── */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── STATS ROW ── */
+.stats-row { display: flex; gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px;
+}
+.stat-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 26px; color: var(--ink); }
+.stat-lbl { font-size: 12px; color: #9090a8; margin-top: 2px; }
+
+.hidden { display: none !important; }
+.mt8 { margin-top: 8px; }
+.mt16 { margin-top: 16px; }
+.mt20 { margin-top: 20px; }
+.text-center { text-align: center; }
+.text-sm { font-size: 13.5px; color: #6b6b80; }
+
+@media (max-width: 600px) {
+  .top-bar { padding: 14px 20px; }
+  .card { padding: 24px; }
+  .main { padding: 24px 16px 60px; }
+  .stats-row { flex-direction: column; }
+}
+</style>
 </head>
 <body>
-  <div class="container" id="app">
-    <!-- LOGIN VIEW -->
-    <div id="loginView">
-      <h1>🏢 PASONS PORT</h1>
-      <h2>Employee Portal</h2>
-      <div class="inline-group">
-        <button id="signupBtn" class="secondary" style="width:auto;" onclick="showSignup()">First time? Register</button>
-        <div style="flex:1;"></div>
-      </div>
-      <div class="card" style="margin-top:16px;">
-        <label for="empIdLogin">Employee ID</label>
-        <input type="text" id="empIdLogin" placeholder="e.g. EMP123" />
-        <button onclick="login()" style="margin-top:12px;">Enter Portal</button>
-        <div id="loginMsg" class="message"></div>
-      </div>
-    </div>
+<div class="shell">
 
-    <!-- REGISTER VIEW (hidden) -->
-    <div id="registerView" class="hidden">
-      <h1>Register</h1>
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      PASONS PORT
+    </div>
+    <div id="topUserArea" class="user-chip hidden">
+      <div id="topAvatar" class="avatar"></div>
+      <span id="topName" style="font-size:14px;"></span>
+      <button class="btn-logout" onclick="logout()">Sign out</button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ════════════════════════════════
+         PAGE: LOGIN
+    ═════════════════════════════════ -->
+    <div id="pageLogin" class="page">
+      <div class="auth-hero">
+        <div class="phase-badge"><span class="dot"></span> Employee Portal</div>
+        <h1>Brand Name<br/>Nomination Portal</h1>
+        <p>Sign in with your employee ID to participate in the brand naming campaign.</p>
+      </div>
       <div class="card">
-        <label for="regEmpId">Employee ID</label>
-        <input type="text" id="regEmpId" placeholder="Company‑issued ID" />
-        <label for="regName" style="margin-top:12px;">Full Name</label>
-        <input type="text" id="regName" placeholder="Your name" />
-        <button onclick="register()" style="margin-top:12px;">Register</button>
-        <div id="regMsg" class="message"></div>
-        <button class="secondary" style="margin-top:12px;" onclick="showLogin()">← Back to login</button>
+        <div class="field">
+          <label>Employee ID</label>
+          <input type="text" id="loginId" placeholder="e.g. EMP001" autocomplete="off" onkeydown="if(event.key==='Enter')login()"/>
+        </div>
+        <button class="btn btn-primary" onclick="login()" id="loginBtn">Sign In</button>
+        <div id="loginMsg" class="toast"></div>
+        <div class="divider">or</div>
+        <p class="text-center text-sm">New employee? <button class="link-btn" onclick="showPage('pageRegister')">Register here</button></p>
       </div>
     </div>
 
-    <!-- PORTAL VIEW (hidden after login) -->
-    <div id="portalView" class="hidden">
-      <div class="logout"><a onclick="logout()">Logout</a></div>
-      <h1>🏷️ Brand Name Portal</h1>
-      <div id="campaignInfo" class="card"></div>
-
-      <!-- Suggestion Phase -->
-      <div id="suggestionPanel" class="hidden">
-        <h2>Suggest a Name</h2>
-        <input type="text" id="suggestionInput" placeholder="Your idea..." />
-        <button onclick="submitSuggestion()" style="margin-top:8px;">Submit</button>
-        <div id="sugMsg" class="message"></div>
+    <!-- ════════════════════════════════
+         PAGE: REGISTER
+    ═════════════════════════════════ -->
+    <div id="pageRegister" class="page hidden">
+      <div class="auth-hero">
+        <h1>Create Account</h1>
+        <p>Register with your company-issued employee ID.</p>
       </div>
-
-      <!-- Admin Shortlist (only if admin) -->
-      <div id="adminShortlistPanel" class="hidden admin-section">
-        <h2>🛠 Admin: Select Final Options</h2>
-        <div id="allSuggestionsList"></div>
-        <button onclick="saveShortlist()" style="margin-top:12px;">Start Poll with Selected</button>
-        <div id="adminMsg" class="message"></div>
-      </div>
-
-      <!-- Poll Phase -->
-      <div id="pollPanel" class="hidden">
-        <h2>📋 Vote for Your Favourite</h2>
-        <div id="pollOptionsList"></div>
-        <button onclick="submitVote()" style="margin-top:12px;">Submit Vote</button>
-        <div id="voteMsg" class="message"></div>
-      </div>
-
-      <!-- Results Phase -->
-      <div id="resultsPanel" class="hidden">
-        <h2>📊 Final Results</h2>
-        <div id="resultsList"></div>
+      <div class="card">
+        <div class="field">
+          <label>Employee ID</label>
+          <input type="text" id="regId" placeholder="e.g. EMP001"/>
+        </div>
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Your full name"/>
+        </div>
+        <button class="btn btn-primary" onclick="register()" id="regBtn">Create Account</button>
+        <div id="regMsg" class="toast"></div>
+        <div class="divider">or</div>
+        <p class="text-center text-sm">Already registered? <button class="link-btn" onclick="showPage('pageLogin')">Sign in</button></p>
       </div>
     </div>
-  </div>
 
-  <script>
-    // ✅ Your exact Supabase credentials
-    const SUPABASE_URL = 'https://ooalljqzldtqelvvtnri.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vYWxsanF6bGR0cWVsdnZ0bnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjE4NzcsImV4cCI6MjA5MjU5Nzg3N30.KhPqEiCvgDKQLdYX-kLYNRejeNgilZYot6_slYFhYXY';
+    <!-- ════════════════════════════════
+         PAGE: EMPLOYEE — SUGGESTION PHASE
+    ═════════════════════════════════ -->
+    <div id="pageEmployee" class="page hidden">
+      <div id="phaseStrip" class="phase-strip">
+        <div class="phase-step" id="ps1">💡 Suggest</div>
+        <div class="phase-step" id="ps2">🗳 Vote</div>
+        <div class="phase-step" id="ps3">🏆 Results</div>
+      </div>
 
-    // Create the Supabase client and immediately show error if it fails
-    let supabase;
-    try {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      // Check if the client has the 'from' method (meaning it was created correctly)
-      if (typeof supabase.from !== 'function') {
-        document.getElementById('loginMsg').innerHTML = '<span class="error">⛔ Database connection error – invalid Supabase key.</span>';
-        console.error('Supabase client missing .from() method');
-      } else {
-        console.log('✅ Supabase client ready');
-      }
-    } catch (e) {
-      document.getElementById('loginMsg').innerHTML = '<span class="error">⛔ Could not connect to database. Check console.</span>';
-      console.error(e);
-    }
-
-    let currentEmployeeId = null;
-    let currentEmployee = null;
-    let campaign = null;
-
-    // ---------- helpers ----------
-    function showLogin() {
-      document.getElementById('loginView').classList.remove('hidden');
-      document.getElementById('registerView').classList.add('hidden');
-      document.getElementById('portalView').classList.add('hidden');
-    }
-    function showSignup() {
-      document.getElementById('loginView').classList.add('hidden');
-      document.getElementById('registerView').classList.remove('hidden');
-      document.getElementById('portalView').classList.add('hidden');
-    }
-
-    // ---------- authentication ----------
-    async function login() {
-      const id = document.getElementById('empIdLogin').value.trim().toUpperCase();
-      const msg = document.getElementById('loginMsg');
-      msg.innerHTML = '<span class="info">⏳ Checking...</span>';
-
-      if (!id) {
-        msg.innerHTML = '<span class="error">Enter your employee ID.</span>';
-        return;
-      }
-      if (!supabase || typeof supabase.from !== 'function') {
-        msg.innerHTML = '<span class="error">⚠️ Database not connected. Please refresh or check configuration.</span>';
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('employees')
-          .select('*')
-          .eq('employee_id', id)
-          .single();
-
-        if (error) {
-          console.error('Login error:', error);
-          msg.innerHTML = '<span class="error">❌ Employee ID not found. Please register first.</span>';
-          return;
-        }
-        if (!data) {
-          msg.innerHTML = '<span class="error">❌ Employee ID not found.</span>';
-          return;
-        }
-
-        // Success
-        msg.innerHTML = '<span class="success">✅ Login successful!</span>';
-        currentEmployee = data;
-        currentEmployeeId = data.employee_id;
-
-        // Switch to portal view
-        setTimeout(() => {
-          document.getElementById('loginView').classList.add('hidden');
-          document.getElementById('registerView').classList.add('hidden');
-          document.getElementById('portalView').classList.remove('hidden');
-          loadCampaignAndUI();
-        }, 500);
-      } catch (err) {
-        console.error(err);
-        msg.innerHTML = '<span class="error">⚠️ Network error. Check console (F12).</span>';
-      }
-    }
-
-    async function register() {
-      const empId = document.getElementById('regEmpId').value.trim().toUpperCase();
-      const name = document.getElementById('regName').value.trim();
-      const msg = document.getElementById('regMsg');
-      msg.innerHTML = '<span class="info">⏳ Registering...</span>';
-
-      if (!empId || !name) {
-        msg.innerHTML = '<span class="error">All fields required.</span>';
-        return;
-      }
-      try {
-        const { error } = await supabase
-          .from('employees')
-          .insert({ employee_id: empId, full_name: name, role: 'employee' });
-        if (error) {
-          if (error.message.includes('duplicate key')) {
-            msg.innerHTML = '<span class="error">This ID is already registered.</span>';
-          } else {
-            msg.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
-          }
-          return;
-        }
-        msg.innerHTML = '<span class="success">✅ Registered! Redirecting to login...</span>';
-        setTimeout(showLogin, 1500);
-      } catch (err) {
-        console.error(err);
-        msg.innerHTML = '<span class="error">Network error. Check console.</span>';
-      }
-    }
-
-    function logout() {
-      currentEmployeeId = null;
-      currentEmployee = null;
-      campaign = null;
-      document.getElementById('portalView').classList.add('hidden');
-      showLogin();
-    }
-
-    // ---------- campaign & UI ----------
-    async function loadCampaignAndUI() {
-      try {
-        const { data } = await supabase
-          .from('campaigns')
-          .select('*')
-          .order('id', { ascending: true })
-          .limit(1)
-          .single();
-        campaign = data;
-        displayCampaignInfo();
-        hideAllPanels();
-        if (!campaign) return;
-
-        if (campaign.status === 'suggestion') {
-          document.getElementById('suggestionPanel').classList.remove('hidden');
-          if (currentEmployee && currentEmployee.role === 'admin') {
-            await loadAdminShortlist();
-            document.getElementById('adminShortlistPanel').classList.remove('hidden');
-          }
-        } else if (campaign.status === 'poll') {
-          await loadPollOptions();
-          document.getElementById('pollPanel').classList.remove('hidden');
-        } else if (campaign.status === 'finished') {
-          await loadResults();
-          document.getElementById('resultsPanel').classList.remove('hidden');
-        }
-      } catch (err) {
-        console.error('Campaign load error:', err);
-      }
-    }
-
-    function hideAllPanels() {
-      document.getElementById('suggestionPanel').classList.add('hidden');
-      document.getElementById('adminShortlistPanel').classList.add('hidden');
-      document.getElementById('pollPanel').classList.add('hidden');
-      document.getElementById('resultsPanel').classList.add('hidden');
-    }
-
-    function displayCampaignInfo() {
-      const div = document.getElementById('campaignInfo');
-      if (!campaign) {
-        div.innerHTML = '<p>No campaign yet. Ask admin to create one in Supabase.</p>';
-        return;
-      }
-      div.innerHTML = `
-        <strong style="font-size:16px;">${campaign.title}</strong><br>
-        <span class="badge">${campaign.status.toUpperCase()}</span>
-        <span style="margin-left:8px;font-size:13px;color:#64748b;">
-          Deadline: ${campaign.suggestion_end ? new Date(campaign.suggestion_end).toLocaleDateString() : 'N/A'}
-        </span>
-      `;
-    }
-
-    // ---------- suggestions ----------
-    async function submitSuggestion() {
-      const text = document.getElementById('suggestionInput').value.trim();
-      const msg = document.getElementById('sugMsg');
-      if (!text) { msg.innerHTML = '<span class="error">Please type a name.</span>'; return; }
-      msg.innerHTML = '<span class="info">Submitting...</span>';
-      const { error } = await supabase
-        .from('suggestions')
-        .insert({ campaign_id: campaign.id, employee_id: currentEmployeeId, name_text: text });
-      if (error) {
-        msg.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
-      } else {
-        msg.innerHTML = '<span class="success">✅ Suggestion recorded!</span>';
-        document.getElementById('suggestionInput').value = '';
-        if (currentEmployee.role === 'admin') await loadAdminShortlist();
-      }
-    }
-
-    // ---------- admin shortlist ----------
-    async function loadAdminShortlist() {
-      const { data } = await supabase
-        .from('suggestions')
-        .select('id, name_text, employee_id, employees(full_name)')
-        .eq('campaign_id', campaign.id);
-      const container = document.getElementById('allSuggestionsList');
-      if (!data || data.length === 0) {
-        container.innerHTML = '<p>No suggestions yet.</p>';
-        return;
-      }
-      container.innerHTML = data.map(s => `
-        <div class="suggestion-item">
-          <span>${s.name_text} <small style="color: #64748b;">(by ${s.employees?.full_name || 'unknown'})</small></span>
-          <input type="checkbox" class="shortlist-check" value="${s.id}">
+      <!-- SUGGESTION PHASE UI -->
+      <div id="empSuggestSection">
+        <div class="page-head">
+          <h2>Suggest a Brand Name</h2>
+          <p id="campDesc">Share your creative idea for our new brand name. All suggestions will be reviewed by the admin team.</p>
         </div>
-      `).join('');
-    }
-
-    async function saveShortlist() {
-      const checks = document.querySelectorAll('.shortlist-check:checked');
-      const ids = Array.from(checks).map(cb => parseInt(cb.value));
-      const msg = document.getElementById('adminMsg');
-      if (ids.length === 0) { msg.innerHTML = '<span class="error">Select at least one.</span>'; return; }
-      msg.innerHTML = '<span class="info">Starting poll...</span>';
-      const inserts = ids.map(sid => ({ campaign_id: campaign.id, suggestion_id: sid }));
-      const { error } = await supabase.from('shortlist').insert(inserts);
-      if (error) {
-        msg.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
-        return;
-      }
-      await supabase
-        .from('campaigns')
-        .update({ status: 'poll', poll_start: new Date().toISOString() })
-        .eq('id', campaign.id);
-      msg.innerHTML = '<span class="success">✅ Poll is now live! Refreshing...</span>';
-      setTimeout(() => loadCampaignAndUI(), 1500);
-    }
-
-    // ---------- poll ----------
-    async function loadPollOptions() {
-      const { data } = await supabase
-        .from('shortlist')
-        .select('id, suggestions!inner(name_text)')
-        .eq('campaign_id', campaign.id);
-      const container = document.getElementById('pollOptionsList');
-      if (!data || data.length === 0) {
-        container.innerHTML = '<p>No options available.</p>';
-        return;
-      }
-      container.innerHTML = data.map(opt => `
-        <div class="option-item">
-          <input type="radio" name="voteOption" value="${opt.id}" id="opt${opt.id}">
-          <label for="opt${opt.id}">${opt.suggestions.name_text}</label>
+        <div class="card card-sm">
+          <div class="field" style="margin-bottom:12px;">
+            <label>Your suggestion</label>
+            <input type="text" id="sugInput" placeholder="Enter a brand name..." maxlength="80" onkeydown="if(event.key==='Enter')submitSuggestion()"/>
+          </div>
+          <button class="btn btn-primary btn-sm" style="width:100%" onclick="submitSuggestion()" id="sugBtn">Submit Suggestion</button>
+          <div id="sugMsg" class="toast"></div>
         </div>
-      `).join('');
-
-      const { data: existing } = await supabase
-        .from('votes')
-        .select('id')
-        .eq('campaign_id', campaign.id)
-        .eq('employee_id', currentEmployeeId)
-        .maybeSingle();
-      if (existing) {
-        document.getElementById('voteMsg').innerHTML = '<span class="success">✅ You have already voted.</span>';
-        document.querySelector('#pollPanel button').disabled = true;
-      }
-    }
-
-    async function submitVote() {
-      const selected = document.querySelector('input[name="voteOption"]:checked');
-      const msg = document.getElementById('voteMsg');
-      if (!selected) { msg.innerHTML = '<span class="error">Select a name first.</span>'; return; }
-      msg.innerHTML = '<span class="info">Casting vote...</span>';
-      const shortlistId = parseInt(selected.value);
-      const { error } = await supabase
-        .from('votes')
-        .insert({ campaign_id: campaign.id, employee_id: currentEmployeeId, shortlist_id: shortlistId });
-      if (error) {
-        if (error.message.includes('duplicate key')) {
-          msg.innerHTML = '<span class="error">❌ You have already voted.</span>';
-        } else {
-          msg.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
-        }
-      } else {
-        msg.innerHTML = '<span class="success">✅ Vote recorded!</span>';
-        document.querySelector('#pollPanel button').disabled = true;
-      }
-    }
-
-    // ---------- results ----------
-    async function loadResults() {
-      const { data: votes } = await supabase.from('votes').select('shortlist_id');
-      const { data: shortlist } = await supabase
-        .from('shortlist')
-        .select('id, suggestions(name_text)')
-        .eq('campaign_id', campaign.id);
-      const counts = {};
-      votes.forEach(v => counts[v.shortlist_id] = (counts[v.shortlist_id] || 0) + 1);
-      const results = shortlist.map(s => ({
-        name: s.suggestions.name_text,
-        count: counts[s.id] || 0
-      })).sort((a,b) => b.count - a.count);
-      document.getElementById('resultsList').innerHTML = results.map((r, i) => `
-        <div class="result-row">
-          <span>${i+1}. ${r.name}</span>
-          <span class="vote-count">${r.count} vote${r.count!==1?'s':''}</span>
+        <div class="section-label">All Suggestions</div>
+        <div id="empSugList" class="suggestion-list">
+          <div class="empty"><div class="empty-icon">💭</div>No suggestions yet. Be the first!</div>
         </div>
-      `).join('');
-    }
+      </div>
 
-    // ---------- startup ----------
-    window.addEventListener('load', () => {
-      showLogin();
-      // If Supabase client is already missing, we already wrote an error in loginMsg (if that element exists)
-      if (typeof supabase === 'undefined' || typeof supabase.from !== 'function') {
-        document.getElementById('loginMsg').innerHTML = '<span class="error">⚠️ Database connection failed. Check the anon key.</span>';
-      }
-    });
-  </script>
+      <!-- POLL PHASE UI -->
+      <div id="empPollSection" class="hidden">
+        <div class="page-head">
+          <h2>Cast Your Vote</h2>
+          <p>The admin has shortlisted the best suggestions. Vote for your favourite brand name.</p>
+        </div>
+        <div id="alreadyVotedBanner" class="voted-banner hidden">
+          ✅ You've already cast your vote. Results will be published soon.
+        </div>
+        <div id="pollOptionsList" class="vote-list"></div>
+        <div id="voteActions" class="mt16">
+          <button class="btn btn-accent" onclick="submitVote()" id="voteBtn">Submit Vote</button>
+          <div id="voteMsg" class="toast"></div>
+        </div>
+      </div>
+
+      <!-- RESULTS PHASE UI -->
+      <div id="empResultsSection" class="hidden">
+        <div class="page-head">
+          <h2>🏆 Final Results</h2>
+          <p>The votes have been counted. Here are the results of the brand naming campaign.</p>
+        </div>
+        <div id="empResultsList"></div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════
+         PAGE: ADMIN DASHBOARD
+    ═════════════════════════════════ -->
+    <div id="pageAdmin" class="page-wide hidden">
+      <div id="adminPhaseStrip" class="phase-strip">
+        <div class="phase-step" id="aps1">💡 Suggestion Phase</div>
+        <div class="phase-step" id="aps2">🗳 Poll Phase</div>
+        <div class="phase-step" id="aps3">🏆 Finished</div>
+      </div>
+
+      <!-- ADMIN: SUGGESTION MANAGEMENT -->
+      <div id="adminSugSection">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+          <div class="page-head" style="margin-bottom:0">
+            <h2>Manage Suggestions</h2>
+            <p>Review all employee suggestions. Select the best ones and launch the poll.</p>
+          </div>
+          <button class="btn btn-accent btn-sm" onclick="launchPoll()" id="launchBtn" style="white-space:nowrap">🚀 Launch Poll with Selected</button>
+        </div>
+        <div id="adminStats" class="stats-row">
+          <div class="stat-card"><div class="stat-val" id="statSugCount">—</div><div class="stat-lbl">Total Suggestions</div></div>
+          <div class="stat-card"><div class="stat-val" id="statEmpCount">—</div><div class="stat-lbl">Employees Participated</div></div>
+          <div class="stat-card"><div class="stat-val" id="statSelectedCount">0</div><div class="stat-lbl">Selected for Poll</div></div>
+        </div>
+        <div class="card card-sm">
+          <div class="section-label">All Suggestions — check to shortlist</div>
+          <div id="adminSugList" class="suggestion-list"></div>
+          <div id="adminSugMsg" class="toast"></div>
+        </div>
+      </div>
+
+      <!-- ADMIN: POLL MANAGEMENT -->
+      <div id="adminPollSection" class="hidden">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+          <div class="page-head" style="margin-bottom:0">
+            <h2>Live Poll</h2>
+            <p>Monitor votes in real-time. End the poll when ready to reveal results.</p>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="endPoll()">End Poll & Reveal Results</button>
+        </div>
+        <div id="adminPollStats" class="stats-row">
+          <div class="stat-card"><div class="stat-val" id="statTotalVotes">—</div><div class="stat-lbl">Votes Cast</div></div>
+          <div class="stat-card"><div class="stat-val" id="statOptions">—</div><div class="stat-lbl">Options on Poll</div></div>
+        </div>
+        <div class="card card-sm">
+          <div class="section-label">Live Vote Counts</div>
+          <div id="adminPollList"></div>
+        </div>
+        <div id="adminPollMsg" class="toast"></div>
+      </div>
+
+      <!-- ADMIN: RESULTS -->
+      <div id="adminResultSection" class="hidden">
+        <div class="page-head">
+          <h2>🏆 Campaign Results</h2>
+          <p>The poll has concluded. Here are the final standings.</p>
+        </div>
+        <div id="adminResultsList"></div>
+        <div id="adminWinnerCard" style="margin-top:20px;"></div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ooalljqzldtqelvvtnri.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vYWxsanF6bGR0cWVsdnZ0bnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjE4NzcsImV4cCI6MjA5MjU5Nzg3N30.KhPqEiCvgDKQLdYX-kLYNRejeNgilZYot6_slYFhYXY';
+
+let db = null;
+let ME = null;        // current employee object
+let CAMPAIGN = null;  // current campaign object
+let pollInterval = null;
+
+// ── INIT ────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  try {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } catch(e) {
+    alert('Database connection failed. Please refresh.');
+    return;
+  }
+  showPage('pageLogin');
+});
+
+// ── NAVIGATION ──────────────────────────────────────────
+function showPage(id) {
+  ['pageLogin','pageRegister','pageEmployee','pageAdmin'].forEach(p => {
+    document.getElementById(p).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function showTopBar(show) {
+  const el = document.getElementById('topUserArea');
+  if (show) {
+    el.classList.remove('hidden');
+    const initials = (ME.full_name || ME.employee_id).split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('topAvatar').textContent = initials;
+    document.getElementById('topName').textContent = ME.full_name || ME.employee_id;
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+// ── TOAST ───────────────────────────────────────────────
+function toast(elId, msg, type='info') {
+  const el = document.getElementById(elId);
+  el.textContent = msg;
+  el.className = `toast toast-${type} show`;
+  if (type !== 'error') setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ── AUTH ─────────────────────────────────────────────────
+async function login() {
+  const raw = document.getElementById('loginId').value.trim();
+  if (!raw) { toast('loginMsg','Please enter your Employee ID.','error'); return; }
+  const id = raw.toUpperCase();
+  setLoading('loginBtn', true);
+
+  const { data, error } = await db.from('employees').select('*').eq('employee_id', id).maybeSingle();
+  if (error || !data) {
+    // try original case
+    const { data: d2 } = await db.from('employees').select('*').eq('employee_id', raw).maybeSingle();
+    if (!d2) {
+      toast('loginMsg','Employee ID not found. Please register first.','error');
+      setLoading('loginBtn', false);
+      return;
+    }
+    ME = d2;
+  } else {
+    ME = data;
+  }
+
+  toast('loginMsg','Welcome back, ' + (ME.full_name || ME.employee_id) + '!','success');
+  setLoading('loginBtn', false);
+  showTopBar(true);
+
+  await loadCampaign();
+  if (ME.role === 'admin') {
+    await renderAdminDashboard();
+    showPage('pageAdmin');
+  } else {
+    await renderEmployeePage();
+    showPage('pageEmployee');
+  }
+}
+
+async function register() {
+  const id = document.getElementById('regId').value.trim().toUpperCase();
+  const name = document.getElementById('regName').value.trim();
+  if (!id || !name) { toast('regMsg','All fields are required.','error'); return; }
+  setLoading('regBtn', true);
+
+  const { error } = await db.from('employees').insert({ employee_id: id, full_name: name, role: 'employee' });
+  if (error) {
+    const msg = (error.code === '23505' || error.message.includes('duplicate'))
+      ? 'This Employee ID is already registered.'
+      : error.message;
+    toast('regMsg', msg, 'error');
+  } else {
+    toast('regMsg', '✅ Account created! Signing you in...', 'success');
+    setTimeout(() => {
+      document.getElementById('loginId').value = id;
+      showPage('pageLogin');
+      login();
+    }, 1200);
+  }
+  setLoading('regBtn', false);
+}
+
+function logout() {
+  ME = null; CAMPAIGN = null;
+  if (pollInterval) clearInterval(pollInterval);
+  showTopBar(false);
+  document.getElementById('loginId').value = '';
+  document.getElementById('loginMsg').className = 'toast';
+  showPage('pageLogin');
+}
+
+// ── CAMPAIGN LOAD ────────────────────────────────────────
+async function loadCampaign() {
+  const { data } = await db.from('campaigns').select('*').order('id',{ascending:false}).limit(1).maybeSingle();
+  CAMPAIGN = data;
+  return CAMPAIGN;
+}
+
+// ── PHASE STRIP ──────────────────────────────────────────
+function setPhaseStrip(status, prefix='') {
+  const phases = ['suggestion','poll','finished'];
+  const ids = prefix
+    ? ['aps1','aps2','aps3']
+    : ['ps1','ps2','ps3'];
+  const idx = phases.indexOf(status);
+  ids.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'phase-step';
+    if (i < idx) el.classList.add('done');
+    else if (i === idx) el.classList.add('active');
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  EMPLOYEE VIEW
+// ════════════════════════════════════════════════════════
+async function renderEmployeePage() {
+  if (!CAMPAIGN) {
+    document.getElementById('empSuggestSection').innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No active campaign at the moment. Check back soon!</div>';
+    return;
+  }
+
+  const status = CAMPAIGN.status;
+  setPhaseStrip(status);
+
+  hide('empSuggestSection'); hide('empPollSection'); hide('empResultsSection');
+
+  if (status === 'suggestion') {
+    show('empSuggestSection');
+    document.getElementById('campDesc').textContent = CAMPAIGN.description || 'Share your creative idea for our new brand name.';
+    await loadEmpSuggestions();
+  } else if (status === 'poll') {
+    show('empPollSection');
+    await loadEmpPoll();
+  } else if (status === 'finished') {
+    show('empResultsSection');
+    await loadEmpResults();
+  }
+}
+
+async function loadEmpSuggestions() {
+  const { data } = await db.from('suggestions')
+    .select('id, name_text, employee_id, employees(full_name)')
+    .eq('campaign_id', CAMPAIGN.id)
+    .order('id', {ascending: false});
+
+  const container = document.getElementById('empSugList');
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">💭</div>No suggestions yet. Be the first!</div>';
+    return;
+  }
+  container.innerHTML = data.map(s => {
+    const isMe = s.employee_id === ME.employee_id;
+    return `<div class="sug-item">
+      <span class="sug-name">${esc(s.name_text)}</span>
+      <span class="sug-by">${esc(s.employees?.full_name || s.employee_id)}</span>
+      ${isMe ? '<span class="sug-own-badge">You</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+async function submitSuggestion() {
+  const text = document.getElementById('sugInput').value.trim();
+  if (!text) { toast('sugMsg','Please enter a brand name.','error'); return; }
+  setLoading('sugBtn', true);
+
+  const { error } = await db.from('suggestions').insert({
+    campaign_id: CAMPAIGN.id,
+    employee_id: ME.employee_id,
+    name_text: text
+  });
+
+  if (error) {
+    toast('sugMsg', error.message, 'error');
+  } else {
+    toast('sugMsg', '✅ Suggestion submitted!', 'success');
+    document.getElementById('sugInput').value = '';
+    await loadEmpSuggestions();
+  }
+  setLoading('sugBtn', false);
+}
+
+async function loadEmpPoll() {
+  // check if already voted
+  const { data: myVote } = await db.from('votes')
+    .select('id, shortlist_id')
+    .eq('campaign_id', CAMPAIGN.id)
+    .eq('employee_id', ME.employee_id)
+    .maybeSingle();
+
+  const { data: opts } = await db.from('shortlist')
+    .select('id, suggestions(name_text)')
+    .eq('campaign_id', CAMPAIGN.id);
+
+  const container = document.getElementById('pollOptionsList');
+  const actions = document.getElementById('voteActions');
+  const banner = document.getElementById('alreadyVotedBanner');
+
+  if (myVote) {
+    banner.classList.remove('hidden');
+    actions.classList.add('hidden');
+  } else {
+    banner.classList.add('hidden');
+    actions.classList.remove('hidden');
+  }
+
+  if (!opts || opts.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>No options available yet.</div>';
+    return;
+  }
+
+  container.innerHTML = opts.map(o => {
+    const selected = myVote && myVote.shortlist_id === o.id ? 'selected' : '';
+    const disabled = myVote ? 'disabled' : '';
+    return `<label class="vote-option ${selected}" onclick="selectVote(this)">
+      <input type="radio" class="vote-radio" name="voteOpt" value="${o.id}" ${myVote?'disabled':''} ${selected?'checked':''}>
+      <span class="vote-label">${esc(o.suggestions?.name_text || 'Unknown')}</span>
+    </label>`;
+  }).join('');
+}
+
+function selectVote(el) {
+  document.querySelectorAll('.vote-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function submitVote() {
+  const sel = document.querySelector('input[name="voteOpt"]:checked');
+  if (!sel) { toast('voteMsg','Please select a name first.','error'); return; }
+  setLoading('voteBtn', true);
+
+  const { error } = await db.from('votes').insert({
+    campaign_id: CAMPAIGN.id,
+    employee_id: ME.employee_id,
+    shortlist_id: parseInt(sel.value)
+  });
+
+  if (error) {
+    const msg = (error.code==='23505'||error.message.includes('duplicate'))
+      ? 'You have already voted.'
+      : error.message;
+    toast('voteMsg', msg, 'error');
+  } else {
+    toast('voteMsg', '✅ Vote recorded! Thank you.', 'success');
+    document.getElementById('voteBtn').disabled = true;
+    document.getElementById('alreadyVotedBanner').classList.remove('hidden');
+    document.getElementById('voteActions').classList.add('hidden');
+  }
+  setLoading('voteBtn', false);
+}
+
+async function loadEmpResults() {
+  const { data: shortlist } = await db.from('shortlist')
+    .select('id, suggestions(name_text)').eq('campaign_id', CAMPAIGN.id);
+  const { data: votes } = await db.from('votes')
+    .select('shortlist_id').eq('campaign_id', CAMPAIGN.id);
+
+  const counts = {};
+  (votes||[]).forEach(v => counts[v.shortlist_id] = (counts[v.shortlist_id]||0)+1);
+  const results = (shortlist||[]).map(s => ({
+    name: s.suggestions?.name_text||'Unknown', count: counts[s.id]||0
+  })).sort((a,b)=>b.count-a.count);
+
+  const total = results.reduce((s,r)=>s+r.count,0);
+  document.getElementById('empResultsList').innerHTML = results.map((r,i) => `
+    <div class="result-item ${i===0?'winner':''}">
+      <span class="result-rank">${i===0?'🏆':`#${i+1}`}</span>
+      <span class="result-name">${esc(r.name)}</span>
+      <span class="result-votes">${r.count} vote${r.count!==1?'s':''} ${total?'('+Math.round(r.count/total*100)+'%)':''}</span>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  ADMIN VIEW
+// ════════════════════════════════════════════════════════
+async function renderAdminDashboard() {
+  if (!CAMPAIGN) {
+    document.getElementById('pageAdmin').innerHTML = `
+      <div class="card" style="text-align:center;padding:48px 32px;">
+        <div style="font-size:48px;margin-bottom:16px;">📭</div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;">No Campaign Found</h2>
+        <p style="color:#6b6b80;">Create a campaign row in Supabase with status = 'suggestion' to begin.</p>
+      </div>`;
+    return;
+  }
+
+  const status = CAMPAIGN.status;
+  setPhaseStrip(status, 'admin');
+
+  hide('adminSugSection'); hide('adminPollSection'); hide('adminResultSection');
+
+  if (status === 'suggestion') {
+    show('adminSugSection');
+    await loadAdminSuggestions();
+    // auto-refresh every 15s
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(loadAdminSuggestions, 15000);
+  } else if (status === 'poll') {
+    show('adminPollSection');
+    await loadAdminPoll();
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(loadAdminPoll, 8000);
+  } else if (status === 'finished') {
+    show('adminResultSection');
+    await loadAdminResults();
+  }
+}
+
+async function loadAdminSuggestions() {
+  const { data } = await db.from('suggestions')
+    .select('id, name_text, employee_id, employees(full_name)')
+    .eq('campaign_id', CAMPAIGN.id)
+    .order('id', {ascending: true});
+
+  const empSet = new Set((data||[]).map(s=>s.employee_id));
+  document.getElementById('statSugCount').textContent = data?.length || 0;
+  document.getElementById('statEmpCount').textContent = empSet.size;
+
+  const container = document.getElementById('adminSugList');
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">💭</div>No suggestions yet. Employees are still submitting.</div>';
+    return;
+  }
+  container.innerHTML = data.map(s => `
+    <div class="sug-item">
+      <span class="sug-name">${esc(s.name_text)}</span>
+      <span class="sug-by">${esc(s.employees?.full_name || s.employee_id)}</span>
+      <div class="check-wrap">
+        <input type="checkbox" class="sug-check shortlist-cb" value="${s.id}" onchange="updateSelectedCount()"/>
+      </div>
+    </div>`).join('');
+}
+
+function updateSelectedCount() {
+  const n = document.querySelectorAll('.shortlist-cb:checked').length;
+  document.getElementById('statSelectedCount').textContent = n;
+}
+
+async function launchPoll() {
+  const checks = document.querySelectorAll('.shortlist-cb:checked');
+  const ids = Array.from(checks).map(c=>parseInt(c.value));
+  if (ids.length < 2) { toast('adminSugMsg','Please select at least 2 suggestions for a fair poll.','error'); return; }
+
+  setLoading('launchBtn', true);
+
+  const inserts = ids.map(sid => ({ campaign_id: CAMPAIGN.id, suggestion_id: sid }));
+  const { error: e1 } = await db.from('shortlist').insert(inserts);
+  if (e1) { toast('adminSugMsg', e1.message, 'error'); setLoading('launchBtn',false); return; }
+
+  const { error: e2 } = await db.from('campaigns')
+    .update({ status: 'poll', poll_start: new Date().toISOString() })
+    .eq('id', CAMPAIGN.id);
+
+  if (e2) { toast('adminSugMsg', e2.message, 'error'); setLoading('launchBtn',false); return; }
+
+  CAMPAIGN.status = 'poll';
+  toast('adminSugMsg','🚀 Poll is now live!','success');
+  setLoading('launchBtn',false);
+  setTimeout(() => renderAdminDashboard(), 1000);
+}
+
+async function loadAdminPoll() {
+  const { data: shortlist } = await db.from('shortlist')
+    .select('id, suggestions(name_text)').eq('campaign_id', CAMPAIGN.id);
+  const { data: votes } = await db.from('votes')
+    .select('shortlist_id').eq('campaign_id', CAMPAIGN.id);
+
+  const counts = {};
+  (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const total = (votes||[]).length;
+  const opts = (shortlist||[]).map(s=>({
+    id: s.id, name: s.suggestions?.name_text||'Unknown', count: counts[s.id]||0
+  })).sort((a,b)=>b.count-a.count);
+
+  document.getElementById('statTotalVotes').textContent = total;
+  document.getElementById('statOptions').textContent = opts.length;
+
+  document.getElementById('adminPollList').innerHTML = opts.map(o => {
+    const pct = total ? Math.round(o.count/total*100) : 0;
+    return `<div class="vote-option" style="cursor:default;margin-bottom:10px;">
+      <span class="voted-label">${esc(o.name)}</span>
+      <div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%"></div></div>
+      <span class="vote-count-label">${o.count} (${pct}%)</span>
+    </div>`;
+  }).join('');
+}
+
+async function endPoll() {
+  if (!confirm('End the poll and reveal results to all employees?')) return;
+
+  const { error } = await db.from('campaigns')
+    .update({ status: 'finished', poll_end: new Date().toISOString() })
+    .eq('id', CAMPAIGN.id);
+
+  if (error) { toast('adminPollMsg', error.message, 'error'); return; }
+
+  CAMPAIGN.status = 'finished';
+  if (pollInterval) clearInterval(pollInterval);
+  await renderAdminDashboard();
+}
+
+async function loadAdminResults() {
+  const { data: shortlist } = await db.from('shortlist')
+    .select('id, suggestions(name_text)').eq('campaign_id', CAMPAIGN.id);
+  const { data: votes } = await db.from('votes')
+    .select('shortlist_id').eq('campaign_id', CAMPAIGN.id);
+
+  const counts = {};
+  (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const total = (votes||[]).length;
+  const results = (shortlist||[]).map(s=>({
+    name: s.suggestions?.name_text||'Unknown', count: counts[s.id]||0
+  })).sort((a,b)=>b.count-a.count);
+
+  document.getElementById('adminResultsList').innerHTML = results.map((r,i)=>`
+    <div class="result-item ${i===0?'winner':''}">
+      <span class="result-rank">${i===0?'🏆':`#${i+1}`}</span>
+      <span class="result-name">${esc(r.name)}</span>
+      <div class="vote-bar-wrap" style="max-width:160px"><div class="vote-bar" style="width:${total?Math.round(r.count/total*100):0}%"></div></div>
+      <span class="result-votes">${r.count} vote${r.count!==1?'s':''} &middot; ${total?Math.round(r.count/total*100):0}%</span>
+    </div>`).join('');
+
+  if (results[0]) {
+    document.getElementById('adminWinnerCard').innerHTML = `
+      <div style="background:linear-gradient(135deg,#fef9ec,#fffbf0);border:1.5px solid #fbbf24;border-radius:16px;padding:28px 24px;text-align:center;">
+        <div style="font-size:40px;margin-bottom:12px;">🎉</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#92400e;margin-bottom:6px;">${esc(results[0].name)}</div>
+        <div style="color:#a16207;font-size:14px;">Winning brand name · ${results[0].count} vote${results[0].count!==1?'s':''}</div>
+      </div>`;
+  }
+}
+
+// ── UTILITIES ────────────────────────────────────────────
+function show(id){ document.getElementById(id).classList.remove('hidden'); }
+function hide(id){ document.getElementById(id).classList.add('hidden'); }
+function esc(str){ const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  if (loading) {
+    btn._orig = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span>';
+  } else {
+    btn.innerHTML = btn._orig || btn.innerHTML;
+  }
+}
+</script>
 </body>
 </html>
