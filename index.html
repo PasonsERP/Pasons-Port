@@ -114,6 +114,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .tag-suggestion{background:var(--amber-light);color:#92400e}
 .tag-poll{background:var(--accent-light);color:#3730a3}
 .tag-finished{background:var(--green-light);color:#065f46}
+.countdown-timer{font-size:12px;color:#92400e;background:var(--amber-light);padding:2px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;margin-left:8px}
+.countdown-timer i{width:12px;height:12px}
 .empty{text-align:center;padding:32px 16px;color:#9090a8;font-size:14px}
 .empty-icon{font-size:40px;margin-bottom:10px}
 .admin-layout{display:flex;min-height:calc(100vh - 72px)}
@@ -133,12 +135,14 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .hidden{display:none!important}
 .mt8{margin-top:8px}
 .mt16{margin-top:16px}
+.mt20{margin-top:20px}
 .text-center{text-align:center}
 .text-sm{font-size:13.5px;color:#6b6b80}
+.section-label{font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:#9090a8;margin-bottom:8px}
 @media(max-width:800px){.admin-layout{flex-direction:column}.admin-sidebar{width:100%;padding:12px 16px}}
 .contest-card{border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow);padding:24px;margin-bottom:24px}
 .contest-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px}
-.contest-card .meta{color:#6b6b80;font-size:14px;margin-bottom:12px}
+.contest-card .meta{color:#6b6b80;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -178,14 +182,14 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       </div>
     </div>
 
-    <!-- EMPLOYEE (multi-contest) -->
+    <!-- EMPLOYEE (multi-contest with countdown & live) -->
     <div id="pageEmployee" class="page hidden">
-      <div class="page-head"><h2>Active Contests</h2><p>Participate in all ongoing Suggestion campaigns.</p></div>
+      <div class="page-head"><h2>Contests</h2><p>Participate in all ongoing and past Suggestion campaigns.</p></div>
       <div id="employeeContestsContainer"></div>
       <div class="text-center mt16"><button class="btn btn-secondary btn-sm" onclick="renderEmployeeView()"><i data-lucide="refresh-cw"></i> Refresh</button></div>
     </div>
 
-    <!-- ADMIN (sidebar unchanged) -->
+    <!-- ADMIN -->
     <div id="pageAdmin" class="page-wide hidden">
       <div class="admin-layout">
         <div class="admin-sidebar">
@@ -207,12 +211,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 let db = null;
 let ME = null;
-let activeContests = []; // array of non-finished contests
+let allContestsCache = [];
 let employeeInterval = null;
+let adminInterval = null;
 
 window.addEventListener('load', () => {
   try { db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
-  catch(e) { alert('DB connection failed.'); return; }
+  catch(e) { alert('Database connection failed.'); return; }
   showPage('pageLogin');
 });
 
@@ -250,7 +255,7 @@ async function login() {
   setLoading('loginBtn', false);
   showTopBar(true);
   if (ME.role === 'admin') { showPage('pageAdmin'); switchAdminTab('overview'); }
-  else { showPage('pageEmployee'); await renderEmployeeView(); startAutoRefresh(); }
+  else { showPage('pageEmployee'); await renderEmployeeView(); startEmployeeAutoRefresh(); }
 }
 
 async function register() {
@@ -264,81 +269,129 @@ async function register() {
 }
 
 function logout() {
-  clearInterval(employeeInterval);
+  clearIntervals();
   ME = null;
-  activeContests = [];
+  allContestsCache = [];
   showTopBar(false);
   showPage('pageLogin');
 }
 
-function startAutoRefresh() {
-  clearInterval(employeeInterval);
-  employeeInterval = setInterval(renderEmployeeView, 12000);
+function clearIntervals() {
+  if (employeeInterval) clearInterval(employeeInterval);
+  if (adminInterval) clearInterval(adminInterval);
 }
 
-/* -----------------------------------------------------
-   EMPLOYEE MULTI‑CONTEST VIEW
------------------------------------------------------ */
+/* ─────────────────────────────────────────────
+   COUNTDOWN HELPER
+───────────────────────────────────────────── */
+function getCountdown(deadline, status) {
+  if (!deadline || status === 'finished') return '';
+  const now = new Date();
+  const end = new Date(deadline);
+  const diff = end - now;
+  if (diff <= 0) return '<span class="countdown-timer"><i data-lucide="clock"></i> Deadline passed</span>';
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / (1000 * 60)) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+  let str = '';
+  if (days > 0) str += `${days}d `;
+  if (hours > 0 || days > 0) str += `${hours}h `;
+  str += `${mins}m ${secs}s`;
+  return `<span class="countdown-timer"><i data-lucide="clock"></i> ${str}</span>`;
+}
+
+/* ─────────────────────────────────────────────
+   EMPLOYEE MULTI‑CONTEST VIEW (fixed + countdown)
+───────────────────────────────────────────── */
+function startEmployeeAutoRefresh() {
+  clearIntervals();
+  employeeInterval = setInterval(async () => {
+    await renderEmployeeView();
+  }, 10000); // refresh every 10s (also updates countdowns)
+}
+
 async function renderEmployeeView() {
-  const { data } = await db.from('contests').select('*').neq('status','finished').order('id', {ascending: false});
-  activeContests = data || [];
+  const { data } = await db.from('contests').select('*').order('id', { ascending: false });
+  allContestsCache = data || [];
+  const active = allContestsCache.filter(c => c.status !== 'finished');
+  const finished = allContestsCache.filter(c => c.status === 'finished');
+
   const container = document.getElementById('employeeContestsContainer');
-  if (!activeContests.length) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon"><i data-lucide="inbox"></i></div>No active campaigns.</div>';
-    lucide.createIcons();
-    return;
+  let html = '';
+
+  if (active.length > 0) {
+    html += '<div class="section-label">Active Contests</div>';
+    for (let c of active) html += buildEmployeeContestCard(c);
+  } else {
+    html += '<div class="empty"><div class="empty-icon"><i data-lucide="inbox"></i></div>No active campaigns.</div>';
   }
 
-  let html = '';
-  for (let c of activeContests) {
-    html += `<div class="contest-card">
-      <h3>${esc(c.title)} <span class="status-tag tag-${c.status}"><i data-lucide="${c.status==='suggestion'?'lightbulb':c.status==='poll'?'check-square':'trophy'}"></i>${c.status}</span></h3>
-      <div class="meta">${esc(c.description || '')} | Type: ${esc(c.type_label || 'General')} | Ends: ${c.suggestion_end ? new Date(c.suggestion_end).toLocaleString() : 'N/A'}</div>`;
+  if (finished.length > 0) {
+    html += '<div class="section-label mt20">Past Contests</div>';
+    for (let c of finished) html += buildEmployeeContestCard(c);
+  }
 
-    if (c.status === 'suggestion') {
-      html += `
-        <div class="field"><label>Your suggestion</label>
+  container.innerHTML = html;
+  lucide.createIcons();
+
+  // Load dynamic data for each contest
+  for (let c of allContestsCache) {
+    if (c.status === 'suggestion') await loadSuggestionsForContest(c.id, `sugList_${c.id}`);
+    else if (c.status === 'poll') await loadPollForContest(c.id);
+    else if (c.status === 'finished') await loadResultsForContest(c.id, `results_${c.id}`);
+  }
+
+  // Also start live poll auto‑refresh for poll contests where user voted
+  startLivePollAutoRefresh(active.filter(c => c.status === 'poll'));
+}
+
+function buildEmployeeContestCard(c) {
+  let countdownHTML = '';
+  if (c.status === 'suggestion') {
+    countdownHTML = getCountdown(c.suggestion_end, c.status);
+  } else if (c.status === 'poll') {
+    // Use poll_end if set, else fallback
+    countdownHTML = getCountdown(c.poll_end || c.suggestion_end, c.status);
+  }
+
+  return `
+    <div class="contest-card">
+      <h3>${esc(c.title)} <span class="status-tag tag-${c.status}"><i data-lucide="${c.status==='suggestion'?'lightbulb':c.status==='poll'?'check-square':'trophy'}"></i>${c.status}</span></h3>
+      <div class="meta">
+        ${esc(c.description || '')} | Type: ${esc(c.type_label || 'General')}
+        ${countdownHTML}
+      </div>
+      ${c.status === 'suggestion' ? `
+        <div class="field">
+          <label>Your suggestion</label>
           <div style="display:flex;gap:8px;">
             <input type="text" id="sugInput_${c.id}" placeholder="Enter a name..." maxlength="80"/>
             <button class="btn btn-accent btn-sm" onclick="submitSuggestion(${c.id})">Submit</button>
           </div>
           <div id="sugMsg_${c.id}" class="toast"></div>
         </div>
-        <div class="suggestion-list" id="sugList_${c.id}"></div>`;
-    } else if (c.status === 'poll') {
-      html += `
+        <div class="suggestion-list" id="sugList_${c.id}"></div>
+      ` : c.status === 'poll' ? `
         <div id="pollArea_${c.id}">
           <div id="voteBanner_${c.id}" class="hidden" style="margin-bottom:12px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:var(--green)"></i> You voted. Live results:</div>
           <div id="pollOpts_${c.id}" class="vote-list"></div>
           <div id="voteActions_${c.id}" class="mt16"><button class="btn btn-accent btn-sm" onclick="submitVote(${c.id})">Submit Vote</button></div>
           <div id="liveResults_${c.id}" class="hidden mt20"></div>
-        </div>`;
-    } else if (c.status === 'finished') {
-      html += `<div id="results_${c.id}"></div>`;
-    }
-    html += `</div>`;
-  }
-  container.innerHTML = html;
-  lucide.createIcons();
-
-  // Load dynamic data per contest
-  for (let c of activeContests) {
-    if (c.status === 'suggestion') {
-      await loadSuggestionsForContest(c.id, `sugList_${c.id}`);
-    } else if (c.status === 'poll') {
-      await loadPollForContest(c.id);
-    } else if (c.status === 'finished') {
-      await loadResultsForContest(c.id, `results_${c.id}`);
-    }
-  }
+        </div>
+      ` : `
+        <div id="results_${c.id}"></div>
+      `}
+    </div>`;
 }
 
 async function loadSuggestionsForContest(contestId, listId) {
   const { data } = await db.from('suggestions')
     .select('id, name_text, employee_id, employees(full_name)')
-    .eq('contest_id', contestId).order('id', {ascending: false});
+    .eq('contest_id', contestId).order('id', { ascending: false });
   const container = document.getElementById(listId);
-  container.innerHTML = (!data || !data.length) ? '<div class="empty"><div class="empty-icon"><i data-lucide="message-circle"></i></div>No suggestions yet.</div>' :
+  if (!container) return;
+  container.innerHTML = (!data || !data.length) ? '<div class="empty">No suggestions yet.</div>' :
     data.map(s => `<div class="sug-item"><span class="sug-name">${esc(s.name_text)}</span><span class="sug-by">${esc(s.employees?.full_name||s.employee_id)}</span>${s.employee_id===ME.employee_id?'<span class="sug-own-badge">You</span>':''}</div>`).join('');
   lucide.createIcons();
 }
@@ -354,11 +407,18 @@ async function submitSuggestion(contestId) {
 }
 
 async function loadPollForContest(contestId) {
-  const { data: myVote } = await db.from('votes').select('id,shortlist_id').eq('contest_id',contestId).eq('employee_id',ME.employee_id).maybeSingle();
-  const { data: opts } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id',contestId);
+  const { data: myVote } = await db.from('votes')
+    .select('id,shortlist_id')
+    .eq('contest_id', contestId)
+    .eq('employee_id', ME.employee_id)
+    .maybeSingle();
 
-  const actions = document.getElementById(`voteActions_${contestId}`);
+  const { data: opts } = await db.from('shortlist')
+    .select('id, suggestions(name_text)')
+    .eq('contest_id', contestId);
+
   const banner = document.getElementById(`voteBanner_${contestId}`);
+  const actions = document.getElementById(`voteActions_${contestId}`);
   const liveDiv = document.getElementById(`liveResults_${contestId}`);
   const optContainer = document.getElementById(`pollOpts_${contestId}`);
 
@@ -372,26 +432,46 @@ async function loadPollForContest(contestId) {
     banner.classList.add('hidden');
     actions.classList.remove('hidden');
     liveDiv.classList.add('hidden');
-    optContainer.innerHTML = (!opts||!opts.length) ? '<div class="empty">No options available.</div>' :
-      opts.map(o => `<label class="vote-option" onclick="selectVote(this)"><input type="radio" class="vote-radio" name="voteOpt_${contestId}" value="${o.id}"><span class="vote-label">${esc(o.suggestions?.name_text||'?')}</span></label>`).join('');
+    optContainer.innerHTML = (!opts||!opts.length) ? '<div class="empty">No options yet.</div>' :
+      opts.map(o => `<label class="vote-option" onclick="selectVote(this)">
+        <input type="radio" class="vote-radio" name="voteOpt_${contestId}" value="${o.id}">
+        <span class="vote-label">${esc(o.suggestions?.name_text||'?')}</span>
+      </label>`).join('');
   }
 }
 
 async function updateLiveResults(contestId, container) {
   const { data: shortlist } = await db.from('shortlist').select('id, suggestions(name_text)').eq('contest_id', contestId);
   const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id', contestId);
-  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id] = (counts[v.shortlist_id]||0)+1);
   const total = (votes||[]).length;
-  const items = (shortlist||[]).map(s => ({ name: s.suggestions?.name_text||'?', count: counts[s.id]||0 })).sort((a,b)=>b.count-a.count);
-  container.innerHTML = '<div class="section-label text-sm">Live Vote Counts</div>' + items.map(o => {
+  const items = (shortlist||[]).map(s => ({ name: s.suggestions?.name_text||'?', count: counts[s.id]||0 })).sort((a,b) => b.count - a.count);
+
+  container.innerHTML = '<div class="section-label">Live Vote Counts</div>' + items.map(o => {
     const pct = total ? Math.round(o.count/total*100) : 0;
-    return `<div class="vote-option" style="cursor:default;margin-bottom:8px;"><span class="voted-label">${esc(o.name)}</span><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%"></div></div><span class="vote-count-label">${o.count} (${pct}%)</span></div>`;
+    return `<div class="vote-option" style="cursor:default;margin-bottom:8px;">
+      <span class="voted-label">${esc(o.name)}</span>
+      <div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%"></div></div>
+      <span class="vote-count-label">${o.count} (${pct}%)</span>
+    </div>`;
   }).join('');
 }
 
-function selectVote(el) {
-  document.querySelectorAll('.vote-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
+function startLivePollAutoRefresh(pollContests) {
+  if (window._livePollInterval) clearInterval(window._livePollInterval);
+  window._livePollInterval = setInterval(async () => {
+    for (let c of pollContests) {
+      const { data: myVote } = await db.from('votes')
+        .select('id')
+        .eq('contest_id', c.id)
+        .eq('employee_id', ME.employee_id)
+        .maybeSingle();
+      if (myVote) {
+        const liveDiv = document.getElementById(`liveResults_${c.id}`);
+        if (liveDiv) await updateLiveResults(c.id, liveDiv);
+      }
+    }
+  }, 8000);
 }
 
 async function submitVote(contestId) {
@@ -403,7 +483,8 @@ async function submitVote(contestId) {
     if (error.message.includes('duplicate')) alert('Already voted.');
     else alert(error.message);
   } else {
-    await loadPollForContest(contestId); // refresh UI to show live results
+    await loadPollForContest(contestId);
+    await renderEmployeeView(); // refresh to show live bars
   }
 }
 
@@ -412,29 +493,33 @@ async function loadResultsForContest(contestId, containerId) {
     .select('id, suggestions(name_text, employee_id, employees(full_name))')
     .eq('contest_id', contestId);
   const { data: votes } = await db.from('votes').select('shortlist_id').eq('contest_id', contestId);
-  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id]=(counts[v.shortlist_id]||0)+1);
+  const counts = {}; (votes||[]).forEach(v => counts[v.shortlist_id] = (counts[v.shortlist_id]||0)+1);
   const results = (shortlist||[]).map(s => ({
     name: s.suggestions?.name_text,
     author: s.suggestions?.employees?.full_name || s.suggestions?.employee_id || 'Unknown',
     count: counts[s.id]||0
-  })).sort((a,b)=>b.count-a.count);
+  })).sort((a,b) => b.count - a.count);
 
-  document.getElementById(containerId).innerHTML = results.map((r,i) => `
-    <div class="result-item ${i===0?'winner':''}">
-      <span class="result-rank">${i===0?'<i data-lucide="trophy"></i>':`#${i+1}`}</span>
-      <span class="result-name">${esc(r.name)}<span class="result-author">by ${esc(r.author)}</span></span>
-      <span class="result-votes">${r.count} vote${r.count!==1?'s':''}</span>
-    </div>`).join('');
-  lucide.createIcons();
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.innerHTML = results.map((r,i) => `
+      <div class="result-item ${i===0?'winner':''}">
+        <span class="result-rank">${i===0?'<i data-lucide="trophy"></i>':`#${i+1}`}</span>
+        <span class="result-name">${esc(r.name)}<span class="result-author">by ${esc(r.author)}</span></span>
+        <span class="result-votes">${r.count} vote${r.count!==1?'s':''}</span>
+      </div>`).join('');
+    lucide.createIcons();
+  }
 }
 
-/* -----------------------------------------------------
-   ADMIN
------------------------------------------------------ */
+/* ─────────────────────────────────────────────
+   ADMIN (unchanged multi‑contest logic)
+───────────────────────────────────────────── */
 function switchAdminTab(tab) {
   document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
   const icons = { overview:'layout-dashboard', activeContest:'play-circle', allContests:'list', employees:'users' };
   document.querySelector(`.admin-sidebar a i[data-lucide="${icons[tab]}"]`)?.parentElement?.classList.add('active');
+  if (adminInterval) clearInterval(adminInterval);
   switch(tab) {
     case 'overview': renderAdminOverview(); break;
     case 'activeContest': renderAdminActiveContests(); break;
@@ -471,11 +556,8 @@ async function renderAdminActiveContests() {
       html += `<div class="contest-card" id="adminContest_${c.id}">
         <h3>${esc(c.title)} <span class="status-tag tag-${c.status}"><i data-lucide="${c.status==='suggestion'?'lightbulb':c.status==='poll'?'check-square':'trophy'}"></i>${c.status}</span></h3>
         <div class="meta">${esc(c.description||'')} | Type: ${esc(c.type_label||'General')} | Deadline: ${new Date(c.suggestion_end).toLocaleString()}</div>`;
-      if (c.status === 'suggestion') {
-        html += `<div id="adminSugSection_${c.id}"></div>`;
-      } else if (c.status === 'poll') {
-        html += `<div id="adminPollSection_${c.id}"></div>`;
-      }
+      if (c.status === 'suggestion') html += `<div id="adminSugSection_${c.id}"></div>`;
+      else if (c.status === 'poll') html += `<div id="adminPollSection_${c.id}"></div>`;
       html += `<div class="mt8">
         <button class="btn btn-danger btn-sm" onclick="deleteContestById(${c.id})"><i data-lucide="trash-2"></i> Delete</button>
         <button class="btn btn-secondary btn-sm" onclick="editContestInline(${c.id})"><i data-lucide="edit-3"></i> Edit</button>
@@ -485,19 +567,16 @@ async function renderAdminActiveContests() {
   document.getElementById('adminContentArea').innerHTML = html;
   lucide.createIcons();
 
-  // Load specific data for each active contest
   for (let c of contests) {
-    if (c.status === 'suggestion') {
-      await loadAdminSuggestionsFor(c.id);
-    } else if (c.status === 'poll') {
-      await loadAdminPollFor(c.id);
-    }
+    if (c.status === 'suggestion') await loadAdminSuggestionsFor(c.id);
+    else if (c.status === 'poll') await loadAdminPollFor(c.id);
   }
 }
 
 function createContestForm() {
-  document.getElementById('createContestForm').classList.toggle('hidden');
-  document.getElementById('createContestForm').innerHTML = `
+  const form = document.getElementById('createContestForm');
+  form.classList.toggle('hidden');
+  form.innerHTML = `
     <div class="field"><label>Title</label><input type="text" id="newTitle"></div>
     <div class="field"><label>Description</label><input type="text" id="newDesc"></div>
     <div class="field"><label>Type</label><input type="text" id="newType" placeholder="e.g. Product"></div>
@@ -529,7 +608,7 @@ async function loadAdminSuggestionsFor(contestId) {
       <button class="btn btn-accent btn-sm" onclick="adminAddSuggestion(${contestId})">Add</button></div>
       <div id="adminOwnSugMsg_${contestId}" class="toast"></div>
     </div>
-    <div class="section-label text-sm">All Suggestions</div>
+    <div class="section-label">All Suggestions</div>
     <div id="adminSugList_${contestId}" class="suggestion-list"></div>
     <button class="btn btn-danger mt16" onclick="launchPollFor(${contestId})">🚀 Shortlist & Launch Poll</button>
     <div id="adminSugMsg_${contestId}" class="toast"></div>`;
@@ -658,6 +737,7 @@ async function renderAdminEmployees() {
   document.getElementById('adminContentArea').innerHTML = html;
   lucide.createIcons();
 }
+
 async function approveEmployee(id) { await db.from('employees').update({status:'approved'}).eq('employee_id',id); renderAdminEmployees(); }
 async function rejectEmployee(id) { await db.from('employees').update({status:'rejected'}).eq('employee_id',id); renderAdminEmployees(); }
 async function toggleAdmin(id) {
