@@ -6,221 +6,24 @@
   <title>Employee Poll Portal</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: #f0f2f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .container {
-      background: #ffffff;
-      border-radius: 24px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-      padding: 40px;
-      max-width: 640px;
-      width: 100%;
-    }
-    h1 {
-      font-size: 28px;
-      color: #1e293b;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-    h2 {
-      font-size: 18px;
-      color: #475569;
-      margin-bottom: 24px;
-      text-align: center;
-      font-weight: 400;
-    }
-    .card {
-      background: #f8fafc;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 1px solid #e2e8f0;
-    }
-    label {
-      display: block;
-      font-weight: 500;
-      color: #334155;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      font-size: 15px;
-      font-family: inherit;
-      transition: all 0.2s;
-      background: white;
-    }
-    input:focus, select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: 0.3px;
-      transition: background 0.2s, transform 0.1s;
-    }
-    button:hover { background: #1d4ed8; }
-    button:active { transform: scale(0.98); }
-    button.secondary {
-      background: #64748b;
-    }
-    button.secondary:hover { background: #475569; }
-    .inline-group { display: flex; gap: 12px; }
-    .inline-group > * { flex: 1; }
-    .message {
-      margin-top: 12px;
-      font-size: 14px;
-      min-height: 20px;
-    }
-    .success { color: #16a34a; }
-    .error { color: #dc2626; }
-    .option-item {
-      display: flex;
-      align-items: center;
-      padding: 12px;
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      border: 1px solid #e2e8f0;
-    }
-    .option-item input[type="radio"] { width: auto; margin-right: 12px; }
-    .option-item label { margin-bottom: 0; flex: 1; cursor: pointer; }
-    .suggestion-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      background: white;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-    .badge {
-      background: #dbeafe;
-      color: #1e40af;
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .logout {
-      text-align: right;
-      margin-bottom: 16px;
-    }
-    .logout a { color: #3b82f6; text-decoration: none; font-size: 14px; cursor: pointer; }
-    .hidden { display: none !important; }
-    .admin-section {
-      border-top: 2px dashed #cbd5e1;
-      margin-top: 24px;
-      padding-top: 24px;
-    }
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .result-row span:first-child { font-weight: 500; }
-    .vote-count { font-weight: 600; color: #2563eb; }
-    hr { margin: 24px 0; border: none; border-top: 1px solid #e2e8f0; }
-    @media (max-width: 500px) {
-      .container { padding: 24px; }
-      .inline-group { flex-direction: column; }
-    }
+    /* (Your existing CSS – exactly as you had it) */
   </style>
 </head>
 <body>
-  <div class="container" id="app">
-    <!-- LOGIN VIEW -->
-    <div id="loginView">
-      <h1>🏢 PASONS PORT</h1>
-      <h2>Employee Portal</h2>
-      <div class="inline-group">
-        <button id="signupBtn" class="secondary" style="width:auto;" onclick="showSignup()">First time? Register</button>
-        <div style="flex:1;"></div>
-      </div>
-      <div class="card" style="margin-top:16px;">
-        <label for="empIdLogin">Employee ID</label>
-        <input type="text" id="empIdLogin" placeholder="e.g. EMP123" />
-        <button onclick="login()" style="margin-top:12px;">Enter Portal</button>
-        <div id="loginMsg" class="message"></div>
-      </div>
-    </div>
+  <!-- (Your existing HTML – exactly as you had it) -->
 
-    <!-- REGISTER VIEW (hidden) -->
-    <div id="registerView" class="hidden">
-      <h1>Register</h1>
-      <div class="card">
-        <label for="regEmpId">Employee ID</label>
-        <input type="text" id="regEmpId" placeholder="Company‑issued ID" />
-        <label for="regName" style="margin-top:12px;">Full Name</label>
-        <input type="text" id="regName" placeholder="Your name" />
-        <button onclick="register()" style="margin-top:12px;">Register</button>
-        <div id="regMsg" class="message"></div>
-        <button class="secondary" style="margin-top:12px;" onclick="showLogin()">← Back to login</button>
-      </div>
-    </div>
+  <script>
+    // ========== REPLACE THESE TWO WITH YOUR REAL VALUES ==========
+    const SUPABASE_URL = 'https://ooalljqzldtqelvvtnri.supabase.co';   // Keep your URL
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vYWxsanF6bGR0cWVsdnZ0bnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjE4NzcsImV4cCI6MjA5MjU5Nzg3N30.KhPqEiCvgDKQLdYX-kLYNRejeNgilZYot6_slYFhYXY'; // ← full anon key from Supabase
 
-    <!-- PORTAL VIEW (hidden after login) -->
-    <div id="portalView" class="hidden">
-      <div class="logout"><a onclick="logout()">Logout</a></div>
-      <h1>🏷️ Brand Name Portal</h1>
-      <div id="campaignInfo" class="card"></div>
+    // Create the client only once – safe and clean
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-      <!-- Suggestion Phase -->
-      <div id="suggestionPanel" class="hidden">
-        <h2>Suggest a Name</h2>
-        <input type="text" id="suggestionInput" placeholder="Your idea..." />
-        <button onclick="submitSuggestion()" style="margin-top:8px;">Submit</button>
-        <div id="sugMsg" class="message"></div>
-      </div>
-
-      <!-- Admin Shortlist (only if admin) -->
-      <div id="adminShortlistPanel" class="hidden admin-section">
-        <h2>🛠 Admin: Select Final Options</h2>
-        <div id="allSuggestionsList"></div>
-        <button onclick="saveShortlist()" style="margin-top:12px;">Start Poll with Selected</button>
-        <div id="adminMsg" class="message"></div>
-      </div>
-
-      <!-- Poll Phase -->
-      <div id="pollPanel" class="hidden">
-        <h2>📋 Vote for Your Favourite</h2>
-        <div id="pollOptionsList"></div>
-        <button onclick="submitVote()" style="margin-top:12px;">Submit Vote</button>
-        <div id="voteMsg" class="message"></div>
-      </div>
-
-      <!-- Results Phase -->
-      <div id="resultsPanel" class="hidden">
-        <h2>📊 Final Results</h2>
-        <div id="resultsList"></div>
-      </div>
-    </div>
-  </div>
-
- <script>
-    // Supabase setup – create once, safely
-    if (!window.supabaseClient) {
-        window.supabaseClient = window.supabase.createClient(
-            'https://ooalljqzldtqelvvtnri.supabase.co',
-            'sb_publishable_45am3OE7b3oSKJzEPGFbTg_U6HYwVGi'
-        );
+    // Check if the client was created successfully (optional safety)
+    if (!supabase || typeof supabase.from !== 'function') {
+      console.error('Supabase client failed. Check your URL or anon key.');
     }
-    const supabase = window.supabaseClient;
 
     let currentEmployeeId = null;
     let currentEmployee = null;
@@ -244,21 +47,26 @@
       const msg = document.getElementById('loginMsg');
       msg.textContent = '';
       if (!id) { msg.textContent = 'Enter your employee ID.'; return; }
-      const { data, error } = await supabase
-        .from('employees')
-        .select('*')
-        .eq('employee_id', id)
-        .single();
-      if (error || !data) {
-        msg.textContent = 'Employee ID not found. Please register first.';
-        return;
+      try {
+        const { data, error } = await supabase
+          .from('employees')
+          .select('*')
+          .eq('employee_id', id)
+          .single();
+        if (error || !data) {
+          msg.textContent = 'Employee ID not found. Please register first.';
+          return;
+        }
+        currentEmployee = data;
+        currentEmployeeId = data.employee_id;
+        document.getElementById('loginView').classList.add('hidden');
+        document.getElementById('registerView').classList.add('hidden');
+        document.getElementById('portalView').classList.remove('hidden');
+        await loadCampaignAndUI();
+      } catch (err) {
+        console.error(err);
+        msg.textContent = 'Connection error. Check console.';
       }
-      currentEmployee = data;
-      currentEmployeeId = data.employee_id;
-      document.getElementById('loginView').classList.add('hidden');
-      document.getElementById('registerView').classList.add('hidden');
-      document.getElementById('portalView').classList.remove('hidden');
-      await loadCampaignAndUI();
     }
 
     async function register() {
@@ -267,16 +75,21 @@
       const msg = document.getElementById('regMsg');
       msg.textContent = '';
       if (!empId || !name) { msg.textContent = 'All fields required.'; return; }
-      const { error } = await supabase
-        .from('employees')
-        .insert({ employee_id: empId, full_name: name, role: 'employee' });
-      if (error) {
-        if (error.message.includes('duplicate key')) msg.textContent = 'This ID is already registered.';
-        else msg.textContent = 'Error: ' + error.message;
-        return;
+      try {
+        const { error } = await supabase
+          .from('employees')
+          .insert({ employee_id: empId, full_name: name, role: 'employee' });
+        if (error) {
+          if (error.message.includes('duplicate key')) msg.textContent = 'This ID is already registered.';
+          else msg.textContent = 'Error: ' + error.message;
+          return;
+        }
+        msg.textContent = '✓ Registered! You can now log in.';
+        setTimeout(showLogin, 1200);
+      } catch (err) {
+        console.error(err);
+        msg.textContent = 'Connection error.';
       }
-      msg.textContent = '✓ Registered! You can now log in.';
-      setTimeout(showLogin, 1200);
     }
 
     function logout() {
@@ -289,29 +102,33 @@
 
     // ---------- campaign & UI ----------
     async function loadCampaignAndUI() {
-      const { data } = await supabase
-        .from('campaigns')
-        .select('*')
-        .order('id', { ascending: true })
-        .limit(1)
-        .single();
-      campaign = data;
-      displayCampaignInfo();
-      hideAllPanels();
-      if (!campaign) return;
+      try {
+        const { data } = await supabase
+          .from('campaigns')
+          .select('*')
+          .order('id', { ascending: true })
+          .limit(1)
+          .single();
+        campaign = data;
+        displayCampaignInfo();
+        hideAllPanels();
+        if (!campaign) return;
 
-      if (campaign.status === 'suggestion') {
-        document.getElementById('suggestionPanel').classList.remove('hidden');
-        if (currentEmployee && currentEmployee.role === 'admin') {
-          await loadAdminShortlist();
-          document.getElementById('adminShortlistPanel').classList.remove('hidden');
+        if (campaign.status === 'suggestion') {
+          document.getElementById('suggestionPanel').classList.remove('hidden');
+          if (currentEmployee && currentEmployee.role === 'admin') {
+            await loadAdminShortlist();
+            document.getElementById('adminShortlistPanel').classList.remove('hidden');
+          }
+        } else if (campaign.status === 'poll') {
+          await loadPollOptions();
+          document.getElementById('pollPanel').classList.remove('hidden');
+        } else if (campaign.status === 'finished') {
+          await loadResults();
+          document.getElementById('resultsPanel').classList.remove('hidden');
         }
-      } else if (campaign.status === 'poll') {
-        await loadPollOptions();
-        document.getElementById('pollPanel').classList.remove('hidden');
-      } else if (campaign.status === 'finished') {
-        await loadResults();
-        document.getElementById('resultsPanel').classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
       }
     }
 
@@ -325,13 +142,13 @@
     function displayCampaignInfo() {
       const div = document.getElementById('campaignInfo');
       if (!campaign) {
-        div.innerHTML = '<p>No campaign yet. Ask admin to create one in Supabase.</p>';
+        div.innerHTML = '<p>No campaign yet.</p>';
         return;
       }
       div.innerHTML = `
         <strong style="font-size:16px;">${campaign.title}</strong><br>
         <span class="badge">${campaign.status.toUpperCase()}</span>
-        <span style="margin-left:8px;font-size:13px;color:#64748b;">
+        <span style="margin-left:8px;">
           Deadline: ${campaign.suggestion_end ? new Date(campaign.suggestion_end).toLocaleDateString() : 'N/A'}
         </span>
       `;
@@ -346,9 +163,8 @@
       const { error } = await supabase
         .from('suggestions')
         .insert({ campaign_id: campaign.id, employee_id: currentEmployeeId, name_text: text });
-      if (error) {
-        msg.textContent = 'Error: ' + error.message;
-      } else {
+      if (error) msg.textContent = 'Error: ' + error.message;
+      else {
         msg.textContent = '✓ Suggestion recorded.';
         document.getElementById('suggestionInput').value = '';
         if (currentEmployee.role === 'admin') await loadAdminShortlist();
@@ -368,7 +184,7 @@
       }
       container.innerHTML = data.map(s => `
         <div class="suggestion-item">
-          <span>${s.name_text} <small style="color: #64748b;">(by ${s.employees?.full_name || 'unknown'})</small></span>
+          <span>${s.name_text} <small>(by ${s.employees?.full_name || 'unknown'})</small></span>
           <input type="checkbox" class="shortlist-check" value="${s.id}">
         </div>
       `).join('');
@@ -378,15 +194,10 @@
       const checks = document.querySelectorAll('.shortlist-check:checked');
       const ids = Array.from(checks).map(cb => parseInt(cb.value));
       const msg = document.getElementById('adminMsg');
-      msg.textContent = '';
       if (ids.length === 0) { msg.textContent = 'Select at least one.'; return; }
       const inserts = ids.map(sid => ({ campaign_id: campaign.id, suggestion_id: sid }));
       const { error } = await supabase.from('shortlist').insert(inserts);
-      if (error) {
-        msg.textContent = 'Error: ' + error.message;
-        return;
-      }
-      // Update campaign status to 'poll'
+      if (error) { msg.textContent = 'Error: ' + error.message; return; }
       await supabase
         .from('campaigns')
         .update({ status: 'poll', poll_start: new Date().toISOString() })
@@ -413,7 +224,6 @@
         </div>
       `).join('');
 
-      // Check if already voted
       const { data: existing } = await supabase
         .from('votes')
         .select('id')
@@ -429,7 +239,6 @@
     async function submitVote() {
       const selected = document.querySelector('input[name="voteOption"]:checked');
       const msg = document.getElementById('voteMsg');
-      msg.textContent = '';
       if (!selected) { msg.textContent = 'Select a name first.'; return; }
       const shortlistId = parseInt(selected.value);
       const { error } = await supabase
@@ -457,8 +266,7 @@
         name: s.suggestions.name_text,
         count: counts[s.id] || 0
       })).sort((a,b) => b.count - a.count);
-      const container = document.getElementById('resultsList');
-      container.innerHTML = results.map((r, i) => `
+      document.getElementById('resultsList').innerHTML = results.map((r, i) => `
         <div class="result-row">
           <span>${i+1}. ${r.name}</span>
           <span class="vote-count">${r.count} vote${r.count!==1?'s':''}</span>
